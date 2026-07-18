@@ -17,7 +17,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Named("partioBean") // Mantiene la coincidencia exacta con tu archivo xhtml
+@Named("partidoBean") // Mantiene la coincidencia exacta con tu archivo xhtml
 @ViewScoped
 public class PartidoBean implements Serializable {
 

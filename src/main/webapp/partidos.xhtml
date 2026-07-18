@@ -58,7 +58,7 @@
         <p:growl id="messages" showDetail="true" />
 
         <p:card style="margin-bottom: 2em;">
-            <p:dataTable id="dtPartidos" var="partido" value="#{partioBean.partidos}" 
+            <p:dataTable id="dtPartidos" var="partido" value="#{partidoBean.partidos}" 
                          widgetVar="wgPartidos" paginator="true" rows="10"
                          paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -121,7 +121,7 @@
                                      styleClass="edit-button rounded-button ui-button-success" 
                                      process="@this"
                                      title="Registrar Marcador">
-                        <f:setPropertyActionListener value="#{partido}" target="#{partioBean.partidoSeleccionado}" />
+                        <f:setPropertyActionListener value="#{partido}" target="#{partidoBean.partidoSeleccionado}" />
                     </p:commandButton>
                 </p:column>
 
@@ -140,30 +140,30 @@
                 <!-- Detalles del partido -->
                 <div style="text-align: center; margin-bottom: 20px;">
                     <span style="font-size: 14px; color: #64748b; font-weight: bold; text-transform: uppercase;">
-                        #{partioBean.partidoSeleccionado.fase}
+                        #{partidoBean.partidoSeleccionado.fase}
                     </span>
                     <h3 style="margin: 5px 0;">
-                        #{partioBean.partidoSeleccionado.seleccionLocal} vs #{partioBean.partidoSeleccionado.seleccionVisitante}
+                        #{partidoBean.partidoSeleccionado.seleccionLocal} vs #{partidoBean.partidoSeleccionado.seleccionVisitante}
                     </h3>
-                    <small>#{partioBean.partidoSeleccionado.sede} - #{partioBean.partidoSeleccionado.ciudad}</small>
+                    <small>#{partidoBean.partidoSeleccionado.sede} - #{partidoBean.partidoSeleccionado.ciudad}</small>
                 </div>
 
                 <!-- Entrada de Goles Local -->
                 <div class="p-field" style="margin-bottom: 15px;">
-                    <p:outputLabel for="golesL" value="Goles #{partioBean.partidoSeleccionado.seleccionLocal}" style="font-weight: bold;"/>
-                    <p:spinner id="golesL" value="#{partioBean.partidoSeleccionado.golesLocal}" min="0" max="20" required="true"/>
+                    <p:outputLabel for="golesL" value="Goles #{partidoBean.partidoSeleccionado.seleccionLocal}" style="font-weight: bold;"/>
+                    <p:spinner id="golesL" value="#{partidoBean.partidoSeleccionado.golesLocal}" min="0" max="20" required="true"/>
                 </div>
 
                 <!-- Entrada de Goles Visitante -->
                 <div class="p-field" style="margin-bottom: 15px;">
-                    <p:outputLabel for="golesV" value="Goles #{partioBean.partidoSeleccionado.seleccionVisitante}" style="font-weight: bold;"/>
-                    <p:spinner id="golesV" value="#{partioBean.partidoSeleccionado.golesVisitante}" min="0" max="20" required="true"/>
+                    <p:outputLabel for="golesV" value="Goles #{partidoBean.partidoSeleccionado.seleccionVisitante}" style="font-weight: bold;"/>
+                    <p:spinner id="golesV" value="#{partidoBean.partidoSeleccionado.golesVisitante}" min="0" max="20" required="true"/>
                 </div>
 
                 <!-- Cambio de Estado -->
                 <div class="p-field" style="margin-bottom: 20px;">
                     <p:outputLabel for="estadoPart" value="Estado del Partido" style="font-weight: bold; display: block; margin-bottom: 5px;"/>
-                    <p:selectOneMenu id="estadoPart" value="#{partioBean.partidoSeleccionado.estado}">
+                    <p:selectOneMenu id="estadoPart" value="#{partidoBean.partidoSeleccionado.estado}">
                         <f:selectItem itemLabel="PROGRAMADO" itemValue="PROGRAMADO" />
                         <f:selectItem itemLabel="EN JUEGO" itemValue="EN_JUEGO" />
                         <f:selectItem itemLabel="FINALIZADO (Liquidar apuestas)" itemValue="FINALIZADO" />
@@ -173,11 +173,11 @@
 
             <!-- Botones de Acción del Modal -->
             <div style="text-align: right; margin-top: 15px;">
-                <p:commandButton value="Guardar Resultado" icon="pi pi-check" 
-                                 actionListener="#{partioBean.guardarResultado}"
-                                 update=":formPartidos:dtPartidos :formPartidos:messages" 
-                                 oncomplete="if (!args.validationFailed) PF('dlgMarcador').hide()"
-                                 styleClass="ui-button-primary" style="margin-right: 5px;"/>
+		<p:commandButton value="Guardar Resultado" icon="pi pi-check"
+                 		 actionListener="#{partidoBean.guardarResultado}"
+                  		 update=":formPartidos:messages @(.ui-datatable)"
+                  		 oncomplete="if (!args.validationFailed) { PF('dlgMarcador').hide(); }"
+                   		 styleClass="ui-button-primary" style="margin-right: 5px;"/>
                 <p:commandButton value="Cancelar" icon="pi pi-times" 
                                  onclick="PF('dlgMarcador').hide()" 
                                  class="ui-button-secondary" type="button"/>
