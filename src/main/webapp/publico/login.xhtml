@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Iniciar sesión - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #0f172a,
+                            #1d4ed8
+                    );
+
+            color: #1e293b;
+        }
+
+        .barra {
+            background-color: #0f172a;
+            color: white;
+            padding: 16px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .marca h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .marca small {
+            color: #cbd5e1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .contenido {
+            min-height: calc(100vh - 90px);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 35px 18px;
+        }
+
+        .tarjeta-login {
+            width: 100%;
+            max-width: 440px;
+
+            background-color: white;
+            border-radius: 14px;
+            padding: 32px;
+
+            box-shadow:
+                    0 14px 35px
+                    rgba(15, 23, 42, 0.28);
+        }
+
+        .cabecera {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .cabecera i {
+            font-size: 50px;
+            color: #2563eb;
+        }
+
+        .cabecera h2 {
+            margin: 12px 0 6px;
+            font-size: 28px;
+        }
+
+        .cabecera p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        .acciones {
+            margin-top: 22px;
+        }
+
+        .acciones .ui-button {
+            width: 100%;
+        }
+
+        .enlace-registro {
+            margin-top: 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .enlace-registro a {
+            color: #2563eb;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nota {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+
+            .tarjeta-login {
+                padding: 22px;
+            }
+
+            .menu {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+    <div class="barra">
+
+        <div class="marca">
+
+            <h1>UTN GolMundial 2026</h1>
+
+            <small>
+                Portal público del torneo
+            </small>
+
+        </div>
+
+        <div class="menu">
+
+            <p:button
+                    value="Inicio"
+                    icon="pi pi-home"
+                    href="inicio.xhtml"
+                    styleClass="ui-button-outlined"/>
+
+            <p:button
+                    value="Partidos"
+                    icon="pi pi-calendar"
+                    href="partidos.xhtml"
+                    styleClass="ui-button-outlined"/>
+
+            <p:button
+                    value="Registrarse"
+                    icon="pi pi-user-plus"
+                    href="registro.xhtml"
+                    styleClass="ui-button-warning"/>
+
+        </div>
+
+    </div>
+
+    <main class="contenido">
+
+        <section class="tarjeta-login">
+
+            <div class="cabecera">
+
+                <i class="pi pi-sign-in"></i>
+
+                <h2>Iniciar sesión</h2>
+
+                <p>
+                    Accede con tu cuenta de
+                    UTN GolMundial.
+                </p>
+
+            </div>
+
+            <h:form id="formLogin">
+
+                <p:messages
+                        id="mensajes"
+                        showDetail="true"
+                        closable="true"/>
+
+                <div class="campo">
+
+                    <p:outputLabel
+                            for="username"
+                            value="Nombre de usuario:"/>
+
+                    <p:inputText
+                            id="username"
+                            value="#{loginBean.username}"
+                            required="true"
+                            requiredMessage="El usuario es obligatorio."
+                            maxlength="60"
+                            autocomplete="username"
+                            placeholder="Ingrese su usuario"
+                            style="width: 100%;"/>
+
+                </div>
+
+                <div class="campo">
+
+                    <p:outputLabel
+                            for="password"
+                            value="Contraseña:"/>
+
+                    <p:password
+                            id="password"
+                            value="#{loginBean.password}"
+                            required="true"
+                            requiredMessage="La contraseña es obligatoria."
+                            maxlength="128"
+                            toggleMask="true"
+                            redisplay="true"
+                            autocomplete="current-password"
+                            placeholder="Ingrese su contraseña"
+                            style="width: 100%;"/>
+
+                </div>
+
+                <div class="acciones">
+
+                    <p:commandButton
+                            value="Ingresar"
+                            icon="pi pi-sign-in"
+                            action="#{loginBean.iniciarSesion}"
+                            process="@form"
+                            ajax="false"
+                            styleClass="ui-button-success"/>
+
+                </div>
+
+                <div class="nota">
+
+                    <i class="pi pi-info-circle"></i>
+
+                    El administrador será dirigido al panel
+                    administrativo. Los usuarios registrados
+                    accederán al portal público.
+
+                </div>
+
+                <div class="enlace-registro">
+
+                    <span>
+                        ¿Todavía no tienes una cuenta?
+                    </span>
+
+                    <h:link
+                            value=" Registrarse"
+                            outcome="/publico/registro.xhtml"/>
+
+                </div>
+
+            </h:form>
+
+        </section>
+
+    </main>
+
+</h:body>
+
+</html>

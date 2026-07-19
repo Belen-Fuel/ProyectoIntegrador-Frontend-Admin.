@@ -134,7 +134,20 @@
             <p:column
                     headerText="Acción">
 
-                #{a.accion}
+                <h:outputText
+                    value="#{a.accion == 'CREAR_USUARIO'
+                    ? 'Crear usuario'
+                    : a.accion == 'CAMBIAR_ROL_USUARIO'
+                    ? 'Cambiar rol'
+                    : a.accion == 'ACTIVAR_USUARIO'
+                    ? 'Activar usuario'
+                    : a.accion == 'DESACTIVAR_USUARIO'
+                    ? 'Desactivar usuario'
+                    : a.accion == 'RESTABLECER_PASSWORD'
+                    ? 'Restablecer contraseña'
+                    : a.accion == 'REGISTRO_USUARIO'
+                    ? 'Registro de usuario'
+                    : a.accion}"/>
 
             </p:column>
 

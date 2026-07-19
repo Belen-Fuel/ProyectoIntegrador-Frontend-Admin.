@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Posiciones - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .barra {
+            background-color: #0f172a;
+            color: white;
+            padding: 16px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .marca h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .marca small {
+            color: #cbd5e1;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sesion-usuario{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            color:white;
+            font-weight:bold;
+        }
+
+        .contenido {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .encabezado {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #0f172a,
+                            #1d4ed8
+                    );
+
+            color: white;
+            padding: 28px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .encabezado h2 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .encabezado p {
+            margin: 0;
+            color: #dbeafe;
+        }
+
+        .filtros {
+            background-color: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 18px;
+
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            box-shadow:
+                    0 3px 10px rgba(15, 23, 42, 0.08);
+        }
+
+        .campo-filtro {
+            min-width: 240px;
+        }
+
+        .campo-filtro label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .positivo {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .negativo {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .pie {
+            background-color: #0f172a;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 24px;
+            margin-top: 35px;
+        }
+
+        @media (max-width: 650px) {
+
+            .barra {
+                align-items: flex-start;
+            }
+
+            .menu {
+                width: 100%;
+            }
+
+            .filtros {
+                align-items: stretch;
+            }
+
+            .campo-filtro {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+    <div class="barra">
+
+        <div class="marca">
+
+            <h1>UTN GolMundial 2026</h1>
+
+            <small>
+                Portal público del torneo
+            </small>
+
+        </div>
+<h:form id="formMenu">
+
+<div class="menu">
+
+    <p:button
+            value="Inicio"
+            icon="pi pi-home"
+            href="inicio.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Partidos"
+            icon="pi pi-calendar"
+            href="partidos.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Posiciones"
+            icon="pi pi-list"
+            href="posiciones.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Selecciones"
+            icon="pi pi-flag"
+            href="selecciones.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Estadísticas"
+            icon="pi pi-chart-bar"
+            href="estadisticas.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <h:panelGroup
+            rendered="#{not loginBean.logueado}"
+            layout="block"
+            style="display:inline-flex;align-items:center;gap:8px;">
+
+        <p:button
+                value="Registrarse"
+                icon="pi pi-user-plus"
+                href="registro.xhtml"
+                styleClass="ui-button-warning"/>
+
+        <p:button
+                value="Ingresar"
+                icon="pi pi-sign-in"
+                href="login.xhtml"
+                styleClass="ui-button-success"/>
+
+    </h:panelGroup>
+
+    <h:panelGroup
+            rendered="#{loginBean.usuarioRegistrado}"
+            layout="block"
+            style="display:inline-flex;align-items:center;gap:8px;">
+
+        <span class="sesion-usuario">
+
+            <i class="pi pi-user"></i>
+
+            #{loginBean.usuario.nombre}
+
+        </span>
+
+        <p:commandButton
+                value="Cerrar sesión"
+                icon="pi pi-sign-out"
+                action="#{loginBean.cerrarSesionPublica}"
+                ajax="false"
+                styleClass="ui-button-danger"/>
+
+    </h:panelGroup>
+
+    <h:panelGroup
+            rendered="#{loginBean.administrador}"
+            layout="block"
+            style="display:inline-flex;align-items:center;gap:8px;">
+
+        <span class="sesion-usuario">
+
+            <i class="pi pi-shield"></i>
+
+            #{loginBean.usuario.nombre}
+
+        </span>
+
+        <p:button
+                value="Panel administrativo"
+                icon="pi pi-cog"
+                href="../dashboard.xhtml"
+                styleClass="ui-button-warning"/>
+
+        <p:commandButton
+                value="Cerrar sesión"
+                icon="pi pi-sign-out"
+                action="#{loginBean.cerrarSesion}"
+                ajax="false"
+                styleClass="ui-button-danger"/>
+
+    </h:panelGroup>
+
+</div>
+
+</h:form>
+
+    </div>
+
+    <main class="contenido">
+
+        <div class="encabezado">
+
+            <h2>Tabla de posiciones</h2>
+
+            <p>
+                Consulta la clasificación de las selecciones
+                y filtra la tabla por grupo.
+            </p>
+
+        </div>
+
+        <h:form id="formPosiciones">
+
+            <p:growl
+                    id="mensajes"
+                    showDetail="true"
+                    life="5000"/>
+
+            <div class="filtros">
+
+                <div class="campo-filtro">
+
+                    <p:outputLabel
+                            for="grupo"
+                            value="Seleccionar grupo:"/>
+
+                    <p:selectOneMenu
+                            id="grupo"
+                            value="#{publicoBean.grupoSeleccionado}"
+                            style="width: 100%;">
+
+                        <f:selectItem
+                                itemLabel="Todos los grupos"
+                                itemValue="#{null}"/>
+
+                        <f:selectItems
+                                value="#{publicoBean.grupos}"
+                                var="grupo"
+                                itemLabel="#{grupo.nombre}"
+                                itemValue="#{grupo.codigo}"/>
+
+                    </p:selectOneMenu>
+
+                </div>
+
+                <p:commandButton
+                        value="Aplicar filtro"
+                        icon="pi pi-filter"
+                        actionListener="#{publicoBean.filtrarPosiciones}"
+                        process="@this grupo"
+                        update=":formPosiciones:tablaPosiciones
+                                :formPosiciones:mensajes"/>
+
+                <p:commandButton
+                        value="Limpiar"
+                        icon="pi pi-times"
+                        actionListener="#{publicoBean.limpiarFiltroGrupo}"
+                        process="@this"
+                        update=":formPosiciones:grupo
+                                :formPosiciones:tablaPosiciones
+                                :formPosiciones:mensajes"
+                        styleClass="ui-button-secondary"/>
+
+                <p:commandButton
+                        value="Actualizar"
+                        icon="pi pi-refresh"
+                        actionListener="#{publicoBean.cargarPosiciones}"
+                        process="@this"
+                        update=":formPosiciones:tablaPosiciones
+                                :formPosiciones:mensajes"
+                        styleClass="ui-button-success"/>
+
+            </div>
+
+            <p:card>
+
+                <p:dataTable
+                        id="tablaPosiciones"
+                        value="#{publicoBean.posiciones}"
+                        var="p"
+                        paginator="true"
+                        rows="12"
+                        paginatorPosition="bottom"
+                        rowsPerPageTemplate="12,24,48"
+                        emptyMessage="No existen posiciones disponibles."
+                        scrollable="true"
+                        scrollWidth="100%">
+
+                    <f:facet name="header">
+                        Clasificación del torneo
+                    </f:facet>
+
+                    <p:column
+                            headerText="Pos."
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText
+                                value="#{p.posicion}"
+                                style="font-weight: bold;"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Código"
+                            style="width: 90px;">
+
+                        <h:outputText
+                                value="#{p.codigoFifa}"
+                                style="font-weight: bold;"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Selección"
+                            style="width: 190px;">
+
+                        <h:outputText value="#{p.seleccion}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Grupo"
+                            style="width: 80px; text-align: center;">
+
+                        <h:outputText value="#{p.grupo}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="PJ"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.jugados}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="PG"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.ganados}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="PE"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.empatados}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="PP"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.perdidos}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="GF"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.golesFavor}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="GC"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText value="#{p.golesContra}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="DG"
+                            style="width: 65px; text-align: center;">
+
+                        <h:outputText
+                                value="#{p.diferenciaGoles}"
+                                styleClass="#{p.diferenciaGoles >= 0
+                                ? 'positivo'
+                                : 'negativo'}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="PTS"
+                            style="width: 75px; text-align: center;">
+
+                        <h:outputText
+                                value="#{p.puntos}"
+                                style="font-weight: bold;"/>
+
+                    </p:column>
+
+</p:dataTable>
+
+            </p:card>
+
+        </h:form>
+
+    </main>
+
+    <footer class="pie">
+
+        <h3>UTN GolMundial 2026</h3>
+
+        <p>
+            Proyecto Integrador · Ingeniería en Software
+        </p>
+
+        <small>
+            © 2026 Todos los derechos reservados
+        </small>
+
+    </footer>
+
+</h:body>
+
+</html>

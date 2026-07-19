@@ -193,7 +193,9 @@
             <strong>Estado de los datos:</strong>
 
             <h:outputText
-                    value=" #{reporteBean.estado}"/>
+                    value="#{reporteBean.estado == 'DATOS_CARGADOS'
+                    ? ' Datos cargados correctamente'
+                    : reporteBean.estado}"/>
 
         </div>
 

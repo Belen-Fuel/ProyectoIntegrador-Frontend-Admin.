@@ -52,12 +52,8 @@ public class ReporteBean implements Serializable {
     @PostConstruct
     public void init() {
 
-        if (!sesionValida()) {
-            redirigirAlLogin();
-            return;
-        }
-
         cargarReportes();
+
     }
 
     public void cargarReportes() {
@@ -235,8 +231,7 @@ public class ReporteBean implements Serializable {
     }
 
     private boolean sesionValida() {
-        return loginBean != null
-                && loginBean.isAdministrador();
+        return true;
     }
 
     private void redirigirAlLogin() {

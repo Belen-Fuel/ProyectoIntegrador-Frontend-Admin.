@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Partidos - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .barra {
+            background-color: #0f172a;
+            color: white;
+            padding: 16px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .marca h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .marca small {
+            color: #cbd5e1;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sesion-usuario{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            color:white;
+            font-weight:bold;
+        }
+
+        .contenido {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .encabezado {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #0f172a,
+                            #1d4ed8
+                    );
+
+            color: white;
+            padding: 28px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .encabezado h2 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .encabezado p {
+            margin: 0;
+            color: #dbeafe;
+        }
+
+        .acciones {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .estado-programado {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .estado-finalizado {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .estado-en-juego {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .resultado {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .pie {
+            background-color: #0f172a;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 24px;
+            margin-top: 35px;
+        }
+
+        @media (max-width: 650px) {
+
+            .barra {
+                align-items: flex-start;
+            }
+
+            .menu {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+    <div class="barra">
+
+        <div class="marca">
+
+            <h1>UTN GolMundial 2026</h1>
+
+            <small>
+                Portal público del torneo
+            </small>
+
+        </div>
+
+        <h:form id="formMenu">
+
+<div class="menu">
+
+    <p:button
+            value="Inicio"
+            icon="pi pi-home"
+            href="inicio.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Partidos"
+            icon="pi pi-calendar"
+            href="partidos.xhtml"/>
+
+    <p:button
+            value="Posiciones"
+            icon="pi pi-list"
+            href="posiciones.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Selecciones"
+            icon="pi pi-flag"
+            href="selecciones.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <p:button
+            value="Estadísticas"
+            icon="pi pi-chart-bar"
+            href="estadisticas.xhtml"
+            styleClass="ui-button-outlined"/>
+
+    <h:panelGroup
+            rendered="#{not loginBean.logueado}"
+            layout="block"
+            style="display:inline-flex;align-items:center;gap:8px;">
+
+        <p:button
+                value="Registrarse"
+                icon="pi pi-user-plus"
+                href="registro.xhtml"
+                styleClass="ui-button-warning"/>
+
+        <p:button
+                value="Ingresar"
+                icon="pi pi-sign-in"
+                href="login.xhtml"
+                styleClass="ui-button-success"/>
+
+    </h:panelGroup>
+
+    <h:panelGroup
+            rendered="#{loginBean.usuarioRegistrado}"
+            layout="block"
+            style="display:inline-flex;align-items:center;gap:8px;">
+
+        <span class="sesion-usuario">
+            <i class="pi pi-user"></i>
+            #{loginBean.usuario.nombre}
+        </span>
+
+        <p:commandButton
+                value="Cerrar sesión"
+                icon="pi pi-sign-out"
+                action="#{loginBean.cerrarSesionPublica}"
+                ajax="false"
+                styleClass="ui-button-danger"/>
+
+    </h:panelGroup>
+
+</div>
+
+</h:form>
+
+    </div>
+
+    <main class="contenido">
+
+        <div class="encabezado">
+
+            <h2>Calendario de partidos</h2>
+
+            <p>
+                Consulta los encuentros, horarios,
+                sedes y resultados del Mundial 2026.
+            </p>
+
+        </div>
+
+        <h:form id="formPartidos">
+
+            <p:growl
+                    id="mensajes"
+                    showDetail="true"
+                    life="5000"/>
+
+            <div class="acciones">
+
+                <p:commandButton
+                        value="Actualizar"
+                        icon="pi pi-refresh"
+                        actionListener="#{publicoBean.cargarPartidos}"
+                        process="@this"
+                        update=":formPartidos:tablaPartidos
+                                :formPartidos:mensajes"/>
+
+            </div>
+
+            <p:card>
+
+                <p:dataTable
+                        id="tablaPartidos"
+                        value="#{publicoBean.partidos}"
+                        var="p"
+                        paginator="true"
+                        rows="12"
+                        reflow="true"
+                        paginatorPosition="bottom"
+                        rowsPerPageTemplate="12,24,48"
+                        emptyMessage="No existen partidos disponibles.">
+
+                    <f:facet name="header">
+                        Partidos del torneo
+                    </f:facet>
+
+                    <p:column
+                            headerText="#"
+                            style="width: 60px; text-align: center;">
+
+                        <h:outputText
+                                value="#{p.numeroPartidoFifa}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Fase"
+                            filterBy="#{p.fase}"
+                            filterMatchMode="contains">
+
+                        <h:outputText value="#{p.fase}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Grupo"
+                            filterBy="#{p.grupo}"
+                            filterMatchMode="exact"
+                            style="text-align: center;">
+
+                        <h:outputText
+                                value="#{empty p.grupo ? '-' : p.grupo}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Local"
+                            filterBy="#{p.seleccionLocal}"
+                            filterMatchMode="contains">
+
+                        <h:outputText
+                                value="#{p.seleccionLocal}"
+                                style="font-weight: bold;"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Resultado"
+                            style="text-align: center;">
+
+                        <h:outputText
+                                rendered="#{not empty p.golesLocal
+                                            and not empty p.golesVisitante}"
+                                value="#{p.golesLocal} - #{p.golesVisitante}"
+                                styleClass="resultado"/>
+
+                        <h:outputText
+                                rendered="#{empty p.golesLocal
+                                            or empty p.golesVisitante}"
+                                value="VS"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Visitante"
+                            filterBy="#{p.seleccionVisitante}"
+                            filterMatchMode="contains">
+
+                        <h:outputText
+                                value="#{p.seleccionVisitante}"
+                                style="font-weight: bold;"/>
+
+                    </p:column>
+
+                    <p:column headerText="Fecha y hora">
+
+                        <h:outputText value="#{p.fechaHoraEt}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Sede"
+                            filterBy="#{p.sede}"
+                            filterMatchMode="contains">
+
+                        <h:outputText value="#{p.sede}"/>
+
+                        <br/>
+
+                        <small>
+                            #{p.ciudad}, #{p.pais}
+                        </small>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Estado"
+                            filterBy="#{p.estado}"
+                            filterMatchMode="exact"
+                            style="text-align: center;">
+
+                        <h:outputText
+                                value="#{p.estado == 'PROGRAMADO'
+                                        ? 'Programado'
+                                        : p.estado == 'FINALIZADO'
+                                        ? 'Finalizado'
+                                        : p.estado == 'EN_JUEGO'
+                                        ? 'En juego'
+                                        : p.estado}"
+                                styleClass="#{p.estado == 'FINALIZADO'
+                                        ? 'estado-finalizado'
+                                        : p.estado == 'EN_JUEGO'
+                                        ? 'estado-en-juego'
+                                        : 'estado-programado'}"/>
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:card>
+
+        </h:form>
+
+    </main>
+
+    <footer class="pie">
+
+        <h3>UTN GolMundial 2026</h3>
+
+        <p>
+            Proyecto Integrador · Ingeniería en Software
+        </p>
+
+        <small>
+            © 2026 Todos los derechos reservados
+        </small>
+
+    </footer>
+
+</h:body>
+
+</html>

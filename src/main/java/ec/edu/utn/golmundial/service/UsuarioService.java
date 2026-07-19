@@ -1,5 +1,8 @@
 package ec.edu.utn.golmundial.service;
 
+import java.util.List;
+import java.util.Locale;
+
 import ec.edu.utn.golmundial.dto.CambiarEstadoUsuarioRequest;
 import ec.edu.utn.golmundial.dto.CambiarPasswordUsuarioRequest;
 import ec.edu.utn.golmundial.dto.CambiarRolUsuarioRequest;
@@ -9,7 +12,6 @@ import ec.edu.utn.golmundial.dto.RegistroUsuarioRequest;
 import ec.edu.utn.golmundial.dto.UsuarioDTO;
 import ec.edu.utn.golmundial.entity.Auditoria;
 import ec.edu.utn.golmundial.entity.Rol;
-import ec.edu.utn.golmundial.entity.SesionUsuario;
 import ec.edu.utn.golmundial.entity.Usuario;
 import ec.edu.utn.golmundial.exception.ReglaNegocioException;
 import ec.edu.utn.golmundial.exception.SolicitudInvalidaException;
@@ -21,9 +23,6 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Gestiona el registro, consulta y administración
@@ -125,6 +124,13 @@ public class UsuarioService {
                         : solicitud.getRol()
                                 .trim()
                                 .toUpperCase(Locale.ROOT);
+        if ("ADMINISTRADOR".equals(nombreRol)) {
+
+                throw new ReglaNegocioException(
+                        "No es posible crear otro administrador."
+                );
+
+        }
 
         Rol rol =
                 buscarRolPorNombre(nombreRol);
@@ -181,6 +187,7 @@ public class UsuarioService {
                 .createQuery(
                         "SELECT u FROM Usuario u "
                                 + "JOIN FETCH u.rol "
+                                + "WHERE UPPER(u.rol.nombre) <> 'ADMINISTRADOR' "
                                 + "ORDER BY u.id",
                         Usuario.class
                 )
@@ -188,7 +195,7 @@ public class UsuarioService {
                 .stream()
                 .map(this::convertir)
                 .toList();
-    }
+        }
 
     /**
      * Obtiene una cuenta por identificador.
@@ -286,19 +293,25 @@ public class UsuarioService {
                 buscarEntidadUsuario(id);
 
         String nuevoRolNombre =
-                solicitud.getRol()
-                        .trim()
-                        .toUpperCase(Locale.ROOT);
+        solicitud.getRol()
+                .trim()
+                .toUpperCase(Locale.ROOT);
+
+        if ("ADMINISTRADOR".equals(nuevoRolNombre)) {
+
+                throw new ReglaNegocioException(
+                        "No es posible asignar el rol ADMINISTRADOR."
+                );
+
+        }
 
         if (usuario.getId().equals(administradorId)
-                && !"ADMINISTRADOR".equals(
-                        nuevoRolNombre
-                )) {
+                && !"ADMINISTRADOR".equals(nuevoRolNombre)) {
 
-            throw new ReglaNegocioException(
-                    "El administrador no puede retirar "
-                            + "su propio rol ADMINISTRADOR"
-            );
+                throw new ReglaNegocioException(
+                        "El administrador no puede retirar "
+                                + "su propio rol ADMINISTRADOR"
+                );
         }
 
         Rol nuevoRol =
@@ -307,6 +320,7 @@ public class UsuarioService {
                 );
 
         usuario.setRol(nuevoRol);
+
         entityManager.flush();
 
         registrarAuditoria(
