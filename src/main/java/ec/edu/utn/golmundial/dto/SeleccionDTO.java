@@ -60,5 +60,32 @@ public class SeleccionDTO {
 
     public String getClasificacion() {
         return clasificacion;
+    }public void setId(Long id) {
+    this.id = id;
     }
+
+    public void setCodigoFifa(String codigoFifa) {
+        this.codigoFifa = codigoFifa;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public void setConfederacion(String confederacion) {
+        this.confederacion = confederacion;
+    }
+
+    public void setAnfitrion(boolean anfitrion) {
+        this.anfitrion = anfitrion;
+    }
+
+    public void setClasificacion(String clasificacion) {
+        this.clasificacion = clasificacion;
+    }
+
 }

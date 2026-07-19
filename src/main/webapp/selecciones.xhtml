@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Gestión de Selecciones - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .contenedor {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .encabezado {
+            background-color: #1e293b;
+            color: white;
+            padding: 18px 22px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .encabezado p {
+            margin: 5px 0 0;
+            color: #cbd5e1;
+        }
+
+        .acciones-superiores {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .anfitrion-si {
+            font-weight: bold;
+            color: #166534;
+        }
+
+        .anfitrion-no {
+            color: #64748b;
+        }
+
+        .campo {
+            margin-bottom: 14px;
+        }
+
+        .campo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 10px;
+            }
+
+            .encabezado {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+
+        <div>
+            <h1>Gestión de Selecciones</h1>
+
+            <p>
+                Administración de las selecciones participantes
+                del Mundial 2026
+            </p>
+        </div>
+
+        <p:button value="Partidos"
+                  href="partidos.xhtml"
+                  icon="pi pi-calendar"
+                  styleClass="ui-button-outlined"
+                  style="color: white; border-color: white;"/>
+    </div>
+
+    <h:form id="formSelecciones">
+
+        <p:growl id="mensajes"
+                 showDetail="true"
+                 life="5000"/>
+
+        <div class="acciones-superiores">
+
+            <p:commandButton value="Nueva selección"
+                             icon="pi pi-plus"
+                             type="button"
+                             onclick="PF('dlgNuevaSeleccion').show()"
+                             styleClass="ui-button-success"/>
+
+            <p:commandButton value="Actualizar lista"
+                             icon="pi pi-refresh"
+                             actionListener="#{seleccionBean.cargarSelecciones}"
+                             update="tablaSelecciones mensajes"/>
+        </div>
+
+        <p:card>
+
+            <p:dataTable id="tablaSelecciones"
+                         var="seleccion"
+                         value="#{seleccionBean.selecciones}"
+                         paginator="true"
+                         rows="10"
+                         reflow="true"
+                         paginatorPosition="bottom"
+                         rowsPerPageTemplate="5,10,20"
+                         emptyMessage="No existen selecciones registradas.">
+
+                <f:facet name="header">
+                    Selecciones participantes
+                </f:facet>
+
+                <p:column headerText="ID"
+                          style="width: 55px; text-align: center;">
+
+                    <h:outputText value="#{seleccion.id}"/>
+                </p:column>
+
+                <p:column headerText="Código FIFA"
+                          filterBy="#{seleccion.codigoFifa}"
+                          filterMatchMode="contains">
+
+                    <h:outputText value="#{seleccion.codigoFifa}"
+                                  style="font-weight: bold;"/>
+                </p:column>
+
+                <p:column headerText="Selección"
+                          filterBy="#{seleccion.nombre}"
+                          filterMatchMode="contains">
+
+                    <h:outputText value="#{seleccion.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Grupo"
+                          filterBy="#{seleccion.grupo}"
+                          filterMatchMode="exact"
+                          style="text-align: center;">
+
+                    <h:outputText value="#{seleccion.grupo}"/>
+                </p:column>
+
+                <p:column headerText="Confederación">
+
+                    <h:outputText value="#{seleccion.confederacion}"/>
+                </p:column>
+
+                <p:column headerText="Anfitrión"
+                          style="text-align: center;">
+
+                    <h:outputText value="#{seleccion.anfitrion ? 'Sí' : 'No'}"
+                                  styleClass="#{seleccion.anfitrion
+                                  ? 'anfitrion-si'
+                                  : 'anfitrion-no'}"/>
+                </p:column>
+
+                <p:column headerText="Clasificación">
+
+                    <h:outputText value="#{seleccion.clasificacion}"/>
+                </p:column>
+
+                <p:column headerText="Acciones"
+                          style="width: 100px; text-align: center;">
+
+                    <p:commandButton icon="pi pi-pencil"
+                                     title="Editar selección"
+                                     actionListener="#{seleccionBean.prepararEdicion(seleccion)}"
+                                     process="@this"
+                                     update=":formEditarSeleccion"
+                                     oncomplete="PF('dlgEditarSeleccion').show()"
+                                     styleClass="ui-button-warning rounded-button"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:card>
+
+    </h:form>
+
+    <!-- Diálogo para crear selección -->
+
+    <p:dialog header="Registrar nueva selección"
+              widgetVar="dlgNuevaSeleccion"
+              modal="true"
+              responsive="true"
+              resizable="false"
+              width="520"
+              showEffect="fade"
+              hideEffect="fade">
+
+        <h:form id="formNuevaSeleccion">
+
+            <p:messages id="mensajesNueva"
+                        showDetail="true"
+                        closable="true"/>
+
+            <div class="campo">
+
+                <p:outputLabel for="codigoNuevo"
+                               value="Código FIFA:"/>
+
+                <p:inputText id="codigoNuevo"
+                             value="#{seleccionBean.nuevaSeleccion.codigoFifa}"
+                             maxlength="3"
+                             required="true"
+                             requiredMessage="El código FIFA es obligatorio."
+                             style="width: 100%;"
+                             placeholder="Ejemplo: ECU"/>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="nombreNuevo"
+                               value="Nombre de la selección:"/>
+
+                <p:inputText id="nombreNuevo"
+                             value="#{seleccionBean.nuevaSeleccion.nombre}"
+                             required="true"
+                             requiredMessage="El nombre es obligatorio."
+                             style="width: 100%;"/>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="grupoNuevo"
+                               value="Grupo:"/>
+
+                <p:selectOneMenu id="grupoNuevo"
+                                 value="#{seleccionBean.nuevaSeleccion.grupo}"
+                                 required="true"
+                                 requiredMessage="Seleccione un grupo."
+                                 style="width: 100%;">
+
+                    <f:selectItem itemLabel="Seleccione"
+                                  itemValue="#{null}"
+                                  noSelectionOption="true"/>
+
+                    <f:selectItems value="#{
+                        ['A','B','C','D','E','F',
+                         'G','H','I','J','K','L']
+                    }"/>
+                </p:selectOneMenu>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="confederacionNueva"
+                               value="Confederación:"/>
+
+                <p:selectOneMenu id="confederacionNueva"
+                                 value="#{seleccionBean.nuevaSeleccion.confederacion}"
+                                 required="true"
+                                 requiredMessage="Seleccione una confederación."
+                                 style="width: 100%;">
+
+                    <f:selectItem itemLabel="Seleccione"
+                                  itemValue="#{null}"
+                                  noSelectionOption="true"/>
+
+                    <f:selectItem itemLabel="AFC" itemValue="AFC"/>
+                    <f:selectItem itemLabel="CAF" itemValue="CAF"/>
+                    <f:selectItem itemLabel="CONCACAF" itemValue="CONCACAF"/>
+                    <f:selectItem itemLabel="CONMEBOL" itemValue="CONMEBOL"/>
+                    <f:selectItem itemLabel="OFC" itemValue="OFC"/>
+                    <f:selectItem itemLabel="UEFA" itemValue="UEFA"/>
+                </p:selectOneMenu>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="clasificacionNueva"
+                               value="Clasificación:"/>
+
+                <p:inputText id="clasificacionNueva"
+                             value="#{seleccionBean.nuevaSeleccion.clasificacion}"
+                             required="true"
+                             requiredMessage="La clasificación es obligatoria."
+                             style="width: 100%;"/>
+            </div>
+
+            <div class="campo">
+
+                <p:selectBooleanCheckbox id="anfitrionNuevo"
+                                         value="#{seleccionBean.nuevaSeleccion.esAnfitrion}"/>
+
+                <p:outputLabel for="anfitrionNuevo"
+                               value=" Es país anfitrión"/>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px;">
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 type="button"
+                                 onclick="PF('dlgNuevaSeleccion').hide()"
+                                 styleClass="ui-button-secondary"
+                                 style="margin-right: 8px;"/>
+
+                <p:commandButton value="Guardar"
+                                 icon="pi pi-check"
+                                 actionListener="#{seleccionBean.guardarSeleccion}"
+                                 process="@form"
+                                 update="@form :formSelecciones:tablaSelecciones
+                                         :formSelecciones:mensajes"/>
+            </div>
+
+        </h:form>
+
+    </p:dialog>
+
+    <!-- Diálogo para actualizar selección -->
+
+    <p:dialog header="Actualizar selección"
+              widgetVar="dlgEditarSeleccion"
+              modal="true"
+              responsive="true"
+              resizable="false"
+              width="520"
+              showEffect="fade"
+              hideEffect="fade">
+
+        <h:form id="formEditarSeleccion">
+
+            <p:messages id="mensajesEditar"
+                        showDetail="true"
+                        closable="true"/>
+
+            <div class="campo">
+
+                <p:outputLabel for="codigoEditar"
+                               value="Código FIFA:"/>
+
+                <p:inputText id="codigoEditar"
+                             value="#{seleccionBean.seleccionEditada.codigoFifa}"
+                             maxlength="3"
+                             required="true"
+                             requiredMessage="El código FIFA es obligatorio."
+                             style="width: 100%;"/>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="nombreEditar"
+                               value="Nombre de la selección:"/>
+
+                <p:inputText id="nombreEditar"
+                             value="#{seleccionBean.seleccionEditada.nombre}"
+                             required="true"
+                             requiredMessage="El nombre es obligatorio."
+                             style="width: 100%;"/>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="grupoEditar"
+                               value="Grupo:"/>
+
+                <p:selectOneMenu id="grupoEditar"
+                                 value="#{seleccionBean.seleccionEditada.grupo}"
+                                 required="true"
+                                 style="width: 100%;">
+
+                    <f:selectItems value="#{
+                        ['A','B','C','D','E','F',
+                         'G','H','I','J','K','L']
+                    }"/>
+                </p:selectOneMenu>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="confederacionEditar"
+                               value="Confederación:"/>
+
+                <p:selectOneMenu id="confederacionEditar"
+                                 value="#{seleccionBean.seleccionEditada.confederacion}"
+                                 required="true"
+                                 style="width: 100%;">
+
+                    <f:selectItem itemLabel="AFC" itemValue="AFC"/>
+                    <f:selectItem itemLabel="CAF" itemValue="CAF"/>
+                    <f:selectItem itemLabel="CONCACAF" itemValue="CONCACAF"/>
+                    <f:selectItem itemLabel="CONMEBOL" itemValue="CONMEBOL"/>
+                    <f:selectItem itemLabel="OFC" itemValue="OFC"/>
+                    <f:selectItem itemLabel="UEFA" itemValue="UEFA"/>
+                </p:selectOneMenu>
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel for="clasificacionEditar"
+                               value="Clasificación:"/>
+
+                <p:inputText id="clasificacionEditar"
+                             value="#{seleccionBean.seleccionEditada.clasificacion}"
+                             required="true"
+                             requiredMessage="La clasificación es obligatoria."
+                             style="width: 100%;"/>
+            </div>
+
+            <div class="campo">
+
+                <p:selectBooleanCheckbox id="anfitrionEditar"
+                                         value="#{seleccionBean.seleccionEditada.esAnfitrion}"/>
+
+                <p:outputLabel for="anfitrionEditar"
+                               value=" Es país anfitrión"/>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px;">
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 type="button"
+                                 onclick="PF('dlgEditarSeleccion').hide()"
+                                 styleClass="ui-button-secondary"
+                                 style="margin-right: 8px;"/>
+
+                <p:commandButton value="Actualizar"
+                                 icon="pi pi-save"
+                                 actionListener="#{seleccionBean.actualizarSeleccion}"
+                                 process="@form"
+                                 update="@form :formSelecciones:tablaSelecciones
+                                         :formSelecciones:mensajes"/>
+            </div>
+
+        </h:form>
+
+    </p:dialog>
+
+</div>
+
+</h:body>
+</html>
