@@ -49,4 +49,23 @@ public class LoginResponse {
     public String getMensaje() {
         return mensaje;
     }
+    public void setToken(String token) {
+    this.token = token;
+    }
+
+    public void setTipoToken(String tipoToken) {
+        this.tipoToken = tipoToken;
+    }
+
+    public void setFechaExpiracionUtc(String fechaExpiracionUtc) {
+        this.fechaExpiracionUtc = fechaExpiracionUtc;
+    }
+
+    public void setUsuario(UsuarioSesionDTO usuario) {
+        this.usuario = usuario;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
 }

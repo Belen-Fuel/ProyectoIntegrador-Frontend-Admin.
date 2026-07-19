@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Gestión de Usuarios - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1e293b;
+        }
+
+        .contenedor {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            background-color: #1e293b;
+            color: white;
+            padding: 20px 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .encabezado p {
+            margin: 6px 0 0;
+            color: #cbd5e1;
+        }
+
+        .acciones-superiores {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .activo {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .inactivo {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .pendiente {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .campo {
+            margin-bottom: 15px;
+        }
+
+        .campo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        .botones-dialogo {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .encabezado {
+                align-items: flex-start;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+
+        <div>
+
+            <h1>Gestión de Usuarios</h1>
+
+            <p>
+                Administración de cuentas,
+                roles y estados del sistema
+            </p>
+
+        </div>
+
+        <p:button
+                value="Volver al panel"
+                icon="pi pi-home"
+                href="dashboard.xhtml"
+                styleClass="ui-button-outlined"
+                style="color: white; border-color: white;"/>
+
+    </div>
+
+    <h:form id="formUsuarios">
+
+        <p:growl
+                id="mensajes"
+                showDetail="true"
+                life="5000"/>
+
+        <div class="acciones-superiores">
+
+            <p:commandButton
+                    value="Nuevo usuario"
+                    icon="pi pi-user-plus"
+                    type="button"
+                    onclick="PF('dlgNuevoUsuario').show()"
+                    styleClass="ui-button-success"/>
+
+            <p:commandButton
+                    value="Actualizar lista"
+                    icon="pi pi-refresh"
+                    actionListener="#{usuarioBean.cargarUsuarios}"
+                    process="@this"
+                    update=":formUsuarios:tablaUsuarios
+                            :formUsuarios:mensajes"/>
+
+        </div>
+
+        <p:card>
+
+            <p:dataTable
+                    id="tablaUsuarios"
+                    value="#{usuarioBean.usuarios}"
+                    var="u"
+                    paginator="true"
+                    rows="10"
+                    reflow="true"
+                    paginatorPosition="bottom"
+                    rowsPerPageTemplate="5,10,20"
+                    emptyMessage="No existen usuarios registrados.">
+
+                <f:facet name="header">
+                    Usuarios registrados
+                </f:facet>
+
+                <p:column
+                        headerText="ID"
+                        style="width: 55px; text-align: center;">
+
+                    <h:outputText value="#{u.id}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Usuario"
+                        filterBy="#{u.username}"
+                        filterMatchMode="contains">
+
+                    <h:outputText
+                            value="#{u.username}"
+                            style="font-weight: bold;"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Nombre"
+                        filterBy="#{u.nombre}"
+                        filterMatchMode="contains">
+
+                    <h:outputText value="#{u.nombre}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Rol"
+                        filterBy="#{u.rol}"
+                        filterMatchMode="exact"
+                        style="text-align: center;">
+
+                    <h:outputText value="#{u.rol}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Estado"
+                        style="text-align: center;">
+
+                    <h:outputText
+                            value="#{u.activo ? 'Activo' : 'Inactivo'}"
+                            styleClass="#{u.activo ? 'activo' : 'inactivo'}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Cambio de contraseña"
+                        style="text-align: center;">
+
+                    <h:outputText
+                            value="#{u.cambioPasswordObligatorio
+                            ? 'Pendiente'
+                            : 'No'}"
+                            styleClass="#{u.cambioPasswordObligatorio
+                            ? 'pendiente'
+                            : ''}"/>
+
+                </p:column>
+
+                <p:column headerText="Fecha de creación">
+
+                    <h:outputText value="#{u.fechaCreacionUtc}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Acciones"
+                        style="width: 150px; text-align: center;">
+
+                    <p:commandButton
+                            icon="pi pi-user-edit"
+                            title="Cambiar rol"
+                            actionListener="#{usuarioBean.prepararCambioRol(u)}"
+                            process="@this"
+                            update=":formCambiarRol"
+                            oncomplete="PF('dlgCambiarRol').show()"
+                            styleClass="ui-button-warning rounded-button"
+                            style="margin-right: 5px;"/>
+
+                    <p:commandButton
+                            icon="#{u.activo
+                            ? 'pi pi-user-minus'
+                            : 'pi pi-user-plus'}"
+                            title="#{u.activo
+                            ? 'Desactivar usuario'
+                            : 'Activar usuario'}"
+                            actionListener="#{usuarioBean.cambiarEstado(u)}"
+                            process="@this"
+                            update=":formUsuarios:tablaUsuarios
+                                    :formUsuarios:mensajes"
+                            styleClass="#{u.activo
+                            ? 'ui-button-danger rounded-button'
+                            : 'ui-button-success rounded-button'}">
+
+                        <p:confirm
+                                header="Confirmación"
+                                message="#{u.activo
+                                ? '¿Desea desactivar este usuario?'
+                                : '¿Desea activar este usuario?'}"
+                                icon="pi pi-exclamation-triangle"/>
+
+                    </p:commandButton>
+
+                </p:column>
+
+            </p:dataTable>
+
+        </p:card>
+
+        <p:confirmDialog
+                global="true"
+                showEffect="fade"
+                hideEffect="fade"
+                responsive="true">
+
+            <p:commandButton
+                    value="Sí"
+                    type="button"
+                    styleClass="ui-confirmdialog-yes ui-button-danger"
+                    icon="pi pi-check"/>
+
+            <p:commandButton
+                    value="No"
+                    type="button"
+                    styleClass="ui-confirmdialog-no ui-button-secondary"
+                    icon="pi pi-times"/>
+
+        </p:confirmDialog>
+
+    </h:form>
+
+    <!-- Diálogo para crear usuario -->
+
+    <p:dialog
+            header="Registrar nuevo usuario"
+            widgetVar="dlgNuevoUsuario"
+            modal="true"
+            responsive="true"
+            resizable="false"
+            width="520"
+            showEffect="fade"
+            hideEffect="fade">
+
+        <h:form id="formNuevoUsuario">
+
+            <p:messages
+                    id="mensajesNuevo"
+                    showDetail="true"
+                    closable="true"/>
+
+            <div class="campo">
+
+                <p:outputLabel
+                        for="usernameNuevo"
+                        value="Usuario:"/>
+
+                <p:inputText
+                        id="usernameNuevo"
+                        value="#{usuarioBean.nuevoUsuario.username}"
+                        required="true"
+                        requiredMessage="El usuario es obligatorio."
+                        maxlength="60"
+                        style="width: 100%;"/>
+
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel
+                        for="nombreNuevo"
+                        value="Nombre completo:"/>
+
+                <p:inputText
+                        id="nombreNuevo"
+                        value="#{usuarioBean.nuevoUsuario.nombre}"
+                        required="true"
+                        requiredMessage="El nombre es obligatorio."
+                        maxlength="150"
+                        style="width: 100%;"/>
+
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel
+                        for="passwordNuevo"
+                        value="Contraseña inicial:"/>
+
+                <p:password
+                        id="passwordNuevo"
+                        value="#{usuarioBean.nuevoUsuario.password}"
+                        required="true"
+                        requiredMessage="La contraseña es obligatoria."
+                        minlength="8"
+                        feedback="true"
+                        toggleMask="true"
+                        style="width: 100%;"/>
+
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel
+                        for="rolNuevo"
+                        value="Rol:"/>
+
+                <p:selectOneMenu
+                        id="rolNuevo"
+                        value="#{usuarioBean.nuevoUsuario.rol}"
+                        required="true"
+                        requiredMessage="Seleccione un rol."
+                        style="width: 100%;">
+
+                    <f:selectItem
+                            itemLabel="Seleccione"
+                            itemValue="#{null}"
+                            noSelectionOption="true"/>
+
+                    <f:selectItem
+                            itemLabel="Administrador"
+                            itemValue="ADMINISTRADOR"/>
+
+                    <f:selectItem
+                            itemLabel="Usuario"
+                            itemValue="USUARIO"/>
+
+                    <f:selectItem
+                            itemLabel="Invitado"
+                            itemValue="INVITADO"/>
+
+                </p:selectOneMenu>
+
+            </div>
+
+            <div class="campo">
+
+                <p:selectBooleanCheckbox
+                        id="activoNuevo"
+                        value="#{usuarioBean.nuevoUsuario.activo}"/>
+
+                <p:outputLabel
+                        for="activoNuevo"
+                        value=" Cuenta activa"/>
+
+            </div>
+
+            <div class="botones-dialogo">
+
+                <p:commandButton
+                        value="Cancelar"
+                        icon="pi pi-times"
+                        type="button"
+                        onclick="PF('dlgNuevoUsuario').hide()"
+                        styleClass="ui-button-secondary"
+                        style="margin-right: 8px;"/>
+
+                <p:commandButton
+                        value="Guardar"
+                        icon="pi pi-check"
+                        actionListener="#{usuarioBean.crearUsuario}"
+                        process="@form"
+                        update="@form
+                                :formUsuarios:tablaUsuarios
+                                :formUsuarios:mensajes"
+                        oncomplete="if (!args.validationFailed) {
+                            PF('dlgNuevoUsuario').hide();
+                        }"/>
+
+            </div>
+
+        </h:form>
+
+    </p:dialog>
+
+    <!-- Diálogo para cambiar rol -->
+
+    <p:dialog
+            header="Cambiar rol del usuario"
+            widgetVar="dlgCambiarRol"
+            modal="true"
+            responsive="true"
+            resizable="false"
+            width="420"
+            showEffect="fade"
+            hideEffect="fade">
+
+        <h:form id="formCambiarRol">
+
+            <p:messages
+                    id="mensajesRol"
+                    showDetail="true"
+                    closable="true"/>
+
+            <div class="campo">
+
+                <p:outputLabel value="Usuario:"/>
+
+                <h:outputText
+                        value="#{usuarioBean.usuarioSeleccionado.username}"
+                        style="display: block;
+                               font-weight: bold;
+                               margin-top: 5px;"/>
+
+            </div>
+
+            <div class="campo">
+
+                <p:outputLabel
+                        for="nuevoRol"
+                        value="Nuevo rol:"/>
+
+                <p:selectOneMenu
+                        id="nuevoRol"
+                        value="#{usuarioBean.nuevoRol}"
+                        required="true"
+                        requiredMessage="Seleccione un rol."
+                        style="width: 100%;">
+
+                    <f:selectItem
+                            itemLabel="Administrador"
+                            itemValue="ADMINISTRADOR"/>
+
+                    <f:selectItem
+                            itemLabel="Usuario"
+                            itemValue="USUARIO"/>
+
+                    <f:selectItem
+                            itemLabel="Invitado"
+                            itemValue="INVITADO"/>
+
+                </p:selectOneMenu>
+
+            </div>
+
+            <div class="botones-dialogo">
+
+                <p:commandButton
+                        value="Cancelar"
+                        icon="pi pi-times"
+                        type="button"
+                        onclick="PF('dlgCambiarRol').hide()"
+                        styleClass="ui-button-secondary"
+                        style="margin-right: 8px;"/>
+
+                <p:commandButton
+                        value="Actualizar rol"
+                        icon="pi pi-save"
+                        actionListener="#{usuarioBean.cambiarRol}"
+                        process="@form"
+                        update="@form
+                                :formUsuarios:tablaUsuarios
+                                :formUsuarios:mensajes"
+                        oncomplete="if (!args.validationFailed) {
+                            PF('dlgCambiarRol').hide();
+                        }"/>
+
+            </div>
+
+        </h:form>
+
+    </p:dialog>
+
+</div>
+
+</h:body>
+
+</html>

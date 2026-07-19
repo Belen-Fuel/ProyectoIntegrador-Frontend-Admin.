@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Reportes - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1e293b;
+        }
+
+        .contenedor {
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        .encabezado {
+            background-color: #1e293b;
+            color: white;
+            padding: 20px 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .encabezado p {
+            margin: 6px 0 0;
+            color: #cbd5e1;
+        }
+
+        .resumen {
+            display: grid;
+            grid-template-columns:
+                    repeat(auto-fit, minmax(170px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .tarjeta-resumen {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow:
+                    0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .tarjeta-resumen i {
+            display: block;
+            font-size: 28px;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .tarjeta-resumen h3 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .tarjeta-resumen p {
+            margin: 5px 0 0;
+            color: #64748b;
+        }
+
+        .estado-datos {
+            background-color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid #15803d;
+        }
+
+        .filtros {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            box-shadow:
+                    0 3px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .campo-filtro {
+            min-width: 220px;
+        }
+
+        .campo-filtro label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .positivo {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .negativo {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .tabla-reportes {
+            min-width: 1150px;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .encabezado {
+                align-items: flex-start;
+            }
+
+            .filtros {
+                align-items: stretch;
+            }
+
+            .campo-filtro {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+
+        <div>
+
+            <h1>Reportes básicos</h1>
+
+            <p>
+                #{reporteBean.torneo}
+            </p>
+
+        </div>
+
+        <p:button
+                value="Volver al panel"
+                icon="pi pi-home"
+                href="dashboard.xhtml"
+                styleClass="ui-button-outlined"
+                style="color: white;
+                       border-color: white;"/>
+
+    </div>
+
+    <h:form id="formReportes">
+
+        <p:growl
+                id="mensajes"
+                showDetail="true"
+                life="5000"/>
+
+        <div class="estado-datos">
+
+            <strong>Estado de los datos:</strong>
+
+            <h:outputText
+                    value=" #{reporteBean.estado}"/>
+
+        </div>
+
+        <div class="resumen">
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-users"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.usuarios}"/>
+                </h3>
+
+                <p>Usuarios</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-id-card"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.roles}"/>
+                </h3>
+
+                <p>Roles</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-flag"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.selecciones}"/>
+                </h3>
+
+                <p>Selecciones</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-calendar"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.partidos}"/>
+                </h3>
+
+                <p>Partidos</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-map-marker"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.sedes}"/>
+                </h3>
+
+                <p>Sedes</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-th-large"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.grupos}"/>
+                </h3>
+
+                <p>Grupos</p>
+
+            </div>
+
+            <div class="tarjeta-resumen">
+
+                <i class="pi pi-sitemap"></i>
+
+                <h3>
+                    <h:outputText
+                            value="#{reporteBean.fases}"/>
+                </h3>
+
+                <p>Fases</p>
+
+            </div>
+
+        </div>
+
+        <div class="filtros">
+
+            <div class="campo-filtro">
+
+                <p:outputLabel
+                        for="grupo"
+                        value="Filtrar por grupo:"/>
+
+                <p:selectOneMenu
+                        id="grupo"
+                        value="#{reporteBean.grupoSeleccionado}"
+                        style="width: 100%;">
+
+                    <f:selectItem
+                            itemLabel="Todos los grupos"
+                            itemValue="#{null}"/>
+
+                    <f:selectItem itemLabel="Grupo A" itemValue="A"/>
+                    <f:selectItem itemLabel="Grupo B" itemValue="B"/>
+                    <f:selectItem itemLabel="Grupo C" itemValue="C"/>
+                    <f:selectItem itemLabel="Grupo D" itemValue="D"/>
+                    <f:selectItem itemLabel="Grupo E" itemValue="E"/>
+                    <f:selectItem itemLabel="Grupo F" itemValue="F"/>
+                    <f:selectItem itemLabel="Grupo G" itemValue="G"/>
+                    <f:selectItem itemLabel="Grupo H" itemValue="H"/>
+                    <f:selectItem itemLabel="Grupo I" itemValue="I"/>
+                    <f:selectItem itemLabel="Grupo J" itemValue="J"/>
+                    <f:selectItem itemLabel="Grupo K" itemValue="K"/>
+                    <f:selectItem itemLabel="Grupo L" itemValue="L"/>
+
+                </p:selectOneMenu>
+
+            </div>
+
+            <p:commandButton
+                    value="Aplicar filtro"
+                    icon="pi pi-filter"
+                    actionListener="#{reporteBean.cargarEstadisticas}"
+                    process="@this grupo"
+                    update=":formReportes:tablaEstadisticas
+                            :formReportes:mensajes"/>
+
+            <p:commandButton
+                    value="Limpiar"
+                    icon="pi pi-times"
+                    actionListener="#{reporteBean.limpiarFiltro}"
+                    process="@this"
+                    update=":formReportes:grupo
+                            :formReportes:tablaEstadisticas
+                            :formReportes:mensajes"
+                    styleClass="ui-button-secondary"/>
+
+            <p:commandButton
+                    value="Actualizar todo"
+                    icon="pi pi-refresh"
+                    actionListener="#{reporteBean.cargarReportes}"
+                    process="@this"
+                    update=":formReportes"
+                    styleClass="ui-button-success"/>
+
+        </div>
+
+        <p:card>
+
+            <p:dataTable
+                    id="tablaEstadisticas"
+                    value="#{reporteBean.estadisticas}"
+                    var="e"
+                    paginator="true"
+                    rows="12"
+                    paginatorPosition="bottom"
+                    rowsPerPageTemplate="12,24,48"
+                    emptyMessage="No existen estadísticas disponibles."
+                    scrollable="true"
+                    scrollWidth="100%"
+                    styleClass="tabla-reportes">
+
+                <f:facet name="header">
+                    Estadísticas acumuladas por selección
+                </f:facet>
+
+                <p:column
+                        headerText="Código"
+                        filterBy="#{e.codigoFifa}"
+                        filterMatchMode="contains"
+                        style="width: 90px;">
+
+                    <h:outputText
+                            value="#{e.codigoFifa}"
+                            style="font-weight: bold;"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Selección"
+                        filterBy="#{e.seleccion}"
+                        filterMatchMode="contains"
+                        style="width: 190px;">
+
+                    <h:outputText
+                            value="#{e.seleccion}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Grupo"
+                        filterBy="#{e.grupo}"
+                        filterMatchMode="exact"
+                        style="width: 80px; text-align: center;">
+
+                    <h:outputText
+                            value="#{e.grupo}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="Confederación"
+                        filterBy="#{e.confederacion}"
+                        filterMatchMode="contains"
+                        style="width: 150px;">
+
+                    <h:outputText
+                            value="#{e.confederacion}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="PJ"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.jugados}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="PG"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.ganados}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="PE"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.empatados}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="PP"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.perdidos}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="GF"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.golesFavor}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="GC"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText value="#{e.golesContra}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="DG"
+                        style="width: 65px; text-align: center;">
+
+                    <h:outputText
+                            value="#{e.diferenciaGoles}"
+                            styleClass="#{e.diferenciaGoles >= 0
+                            ? 'positivo'
+                            : 'negativo'}"/>
+
+                </p:column>
+
+                <p:column
+                        headerText="PTS"
+                        style="width: 70px; text-align: center;">
+
+                    <h:outputText
+                            value="#{e.puntos}"
+                            style="font-weight: bold;"/>
+
+                </p:column>
+
+            </p:dataTable>
+
+        </p:card>
+
+    </h:form>
+
+</div>
+
+</h:body>
+
+</html>

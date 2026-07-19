@@ -58,4 +58,31 @@ public class AuditoriaDTO {
     public String getFechaHoraUtc() {
         return fechaHoraUtc;
     }
+    public void setId(Long id) {
+    this.id = id;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+
+    public void setEntidad(String entidad) {
+        this.entidad = entidad;
+    }
+
+    public void setEntidadId(Long entidadId) {
+        this.entidadId = entidadId;
+    }
+
+    public void setUsuarioReferencia(String usuarioReferencia) {
+        this.usuarioReferencia = usuarioReferencia;
+    }
+
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
+    }
+
+    public void setFechaHoraUtc(String fechaHoraUtc) {
+        this.fechaHoraUtc = fechaHoraUtc;
+    }
 }

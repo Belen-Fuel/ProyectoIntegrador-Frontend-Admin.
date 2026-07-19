@@ -107,4 +107,55 @@ public class EstadisticaSeleccionDTO {
     public int getPuntos() {
         return puntos;
     }
+    public void setSeleccionId(Long seleccionId) {
+    this.seleccionId = seleccionId;
+    }
+
+    public void setCodigoFifa(String codigoFifa) {
+        this.codigoFifa = codigoFifa;
+    }
+
+    public void setSeleccion(String seleccion) {
+        this.seleccion = seleccion;
+    }
+
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
+
+    public void setConfederacion(String confederacion) {
+        this.confederacion = confederacion;
+    }
+
+    public void setJugados(int jugados) {
+        this.jugados = jugados;
+    }
+
+    public void setGanados(int ganados) {
+        this.ganados = ganados;
+    }
+
+    public void setEmpatados(int empatados) {
+        this.empatados = empatados;
+    }
+
+    public void setPerdidos(int perdidos) {
+        this.perdidos = perdidos;
+    }
+
+    public void setGolesFavor(int golesFavor) {
+        this.golesFavor = golesFavor;
+    }
+
+    public void setGolesContra(int golesContra) {
+        this.golesContra = golesContra;
+    }
+
+    public void setDiferenciaGoles(int diferenciaGoles) {
+        this.diferenciaGoles = diferenciaGoles;
+    }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
 }

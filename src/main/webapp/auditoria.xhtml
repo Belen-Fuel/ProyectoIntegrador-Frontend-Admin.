@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Auditoría - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1e293b;
+        }
+
+        .contenedor {
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        .encabezado {
+            background-color: #1e293b;
+            color: white;
+            padding: 20px 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .encabezado p {
+            margin: 6px 0 0;
+            color: #cbd5e1;
+        }
+
+        .acciones {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .detalle {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+
+        <div>
+
+            <h1>Auditoría del Sistema</h1>
+
+            <p>
+                Consulta de acciones administrativas
+                realizadas en el sistema
+            </p>
+
+        </div>
+
+        <p:button
+                value="Volver al panel"
+                icon="pi pi-home"
+                href="dashboard.xhtml"/>
+
+    </div>
+
+    <h:form id="formAuditoria">
+
+        <p:growl
+                id="mensajes"
+                showDetail="true"/>
+
+        <div class="acciones">
+
+            <p:commandButton
+                    value="Actualizar"
+                    icon="pi pi-refresh"
+                    actionListener="#{auditoriaBean.cargarAuditorias}"
+                    process="@this"
+                    update=":formAuditoria:tablaAuditoria
+                            :formAuditoria:mensajes"/>
+
+        </div>
+
+        <p:dataTable
+                id="tablaAuditoria"
+                value="#{auditoriaBean.auditorias}"
+                var="a"
+
+                paginator="true"
+                rows="10"
+
+                reflow="true"
+
+                rowsPerPageTemplate="10,20,50"
+
+                emptyMessage="No existen registros de auditoría.">
+
+            <p:column
+                    headerText="ID"
+                    style="width:60px">
+
+                #{a.id}
+
+            </p:column>
+
+            <p:column
+                    headerText="Acción">
+
+                #{a.accion}
+
+            </p:column>
+
+            <p:column
+                    headerText="Entidad">
+
+                #{a.entidad}
+
+            </p:column>
+                        <p:column
+                    headerText="ID Entidad"
+                    style="width:90px">
+
+                #{a.entidadId}
+
+            </p:column>
+
+            <p:column
+                    headerText="Usuario">
+
+                #{a.usuarioReferencia}
+
+            </p:column>
+
+            <p:column
+                    headerText="Detalle">
+
+                <h:outputText
+                        value="#{a.detalle}"
+                        styleClass="detalle"/>
+
+            </p:column>
+
+            <p:column
+                    headerText="Fecha y hora">
+
+                #{a.fechaHoraUtc}
+
+            </p:column>
+
+        </p:dataTable>
+
+    </h:form>
+
+</div>
+
+</h:body>
+
+</html>

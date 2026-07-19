@@ -55,4 +55,30 @@ public class UsuarioSesionDTO {
     public boolean isCambioPasswordObligatorio() {
         return cambioPasswordObligatorio;
     }
+    public void setId(Long id) {
+    this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public void setCambioPasswordObligatorio(
+            boolean cambioPasswordObligatorio
+    ) {
+        this.cambioPasswordObligatorio =
+                cambioPasswordObligatorio;
+    }
 }

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Inicio de sesión - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f1f5f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-contenedor {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-encabezado {
+            background-color: #1e293b;
+            color: white;
+            padding: 24px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .login-encabezado h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .login-encabezado p {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+        }
+
+        .login-cuerpo {
+            background-color: white;
+            padding: 25px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        .boton-login {
+            width: 100%;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+    <div class="login-contenedor">
+
+        <div class="login-encabezado">
+            <h1>Panel Administrativo</h1>
+            <p>UTN GolMundial 2026</p>
+        </div>
+
+        <div class="login-cuerpo">
+
+            <h:form id="formLogin">
+
+                <p:growl id="mensajes"
+                         showDetail="true"
+                         life="5000"/>
+
+                <div class="campo">
+
+                    <p:outputLabel for="username"
+                                   value="Usuario"/>
+
+                    <p:inputText id="username"
+                                 value="#{loginBean.username}"
+                                 required="true"
+                                 requiredMessage="El usuario es obligatorio."
+                                 autocomplete="username"
+                                 style="width: 100%;"
+                                 placeholder="Ingrese su usuario"/>
+                </div>
+
+                <div class="campo">
+
+                    <p:outputLabel for="password"
+                                   value="Contraseña"/>
+
+                    <p:password id="password"
+                                value="#{loginBean.password}"
+                                required="true"
+                                requiredMessage="La contraseña es obligatoria."
+                                feedback="false"
+                                toggleMask="true"
+                                autocomplete="current-password"
+                                style="width: 100%;"
+                                placeholder="Ingrese su contraseña"/>
+                </div>
+
+                <p:commandButton value="Iniciar sesión"
+                                 icon="pi pi-sign-in"
+                                 action="#{loginBean.iniciarSesion}"
+                                 process="@form"
+                                 update="@form"
+                                 styleClass="ui-button-primary boton-login"/>
+
+            </h:form>
+
+        </div>
+
+    </div>
+
+</h:body>
+</html>

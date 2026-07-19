@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <title>Panel Administrativo - UTN GolMundial 2026</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .barra-superior {
+            background-color: #1e293b;
+            color: white;
+            padding: 16px 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .barra-superior h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contenido {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .bienvenida {
+            margin-bottom: 25px;
+        }
+
+        .bienvenida h2 {
+            margin-bottom: 6px;
+        }
+
+        .bienvenida p {
+            margin-top: 0;
+            color: #64748b;
+        }
+
+        .tarjetas {
+            display: grid;
+
+            grid-template-columns:
+                    repeat(auto-fit, minmax(240px, 1fr));
+
+            gap: 20px;
+        }
+
+        .tarjeta {
+            background-color: white;
+            border-radius: 10px;
+            padding: 24px;
+
+            box-shadow:
+                    0 4px 12px rgba(0, 0, 0, 0.08);
+
+            transition: transform 0.2s ease;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-3px);
+        }
+
+        .tarjeta i {
+            display: block;
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #2563eb;
+        }
+
+        .tarjeta h3 {
+            margin: 0 0 8px;
+        }
+
+        .tarjeta p {
+            color: #64748b;
+            min-height: 45px;
+        }
+
+        @media (max-width: 600px) {
+
+            .barra-superior {
+                align-items: flex-start;
+            }
+
+            .usuario {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+    </style>
+
+</h:head>
+
+<h:body>
+
+    <div class="barra-superior">
+
+        <div>
+
+            <h1>Panel Administrativo</h1>
+
+            <small>
+                UTN GolMundial 2026
+            </small>
+
+        </div>
+
+        <h:form id="formSesion">
+
+            <div class="usuario">
+
+                <span>
+
+                    <i class="pi pi-user"></i>
+
+                    #{loginBean.usuario.nombre}
+
+                </span>
+
+                <p:commandButton
+                        value="Cerrar sesión"
+                        icon="pi pi-sign-out"
+                        action="#{loginBean.cerrarSesion}"
+                        ajax="false"
+                        styleClass="ui-button-danger"/>
+
+            </div>
+
+        </h:form>
+
+    </div>
+
+    <div class="contenido">
+
+        <div class="bienvenida">
+
+            <h2>
+                Bienvenido, #{loginBean.usuario.nombre}
+            </h2>
+
+            <p>
+                Seleccione uno de los módulos administrativos.
+            </p>
+
+        </div>
+
+        <div class="tarjetas">
+
+            <div class="tarjeta">
+
+                <i class="pi pi-calendar"></i>
+
+                <h3>Gestión de partidos</h3>
+
+                <p>
+                    Consulte los encuentros y registre
+                    los resultados oficiales.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="partidos.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <i class="pi pi-flag"></i>
+
+                <h3>Gestión de selecciones</h3>
+
+                <p>
+                    Consulte, registre y actualice
+                    las selecciones participantes.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="selecciones.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <i class="pi pi-map-marker"></i>
+
+                <h3>Sedes</h3>
+
+                <p>
+                    Consulte las sedes y estadios
+                    del torneo.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="sedes.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <i class="pi pi-users"></i>
+
+                <h3>Gestión de usuarios</h3>
+
+                <p>
+                    Administración de cuentas,
+                    estados y roles del sistema.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="usuarios.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <i class="pi pi-book"></i>
+
+                <h3>Auditoría</h3>
+
+                <p>
+                    Consulta de acciones administrativas
+                    realizadas en el sistema.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="auditoria.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+            <div class="tarjeta">
+
+                <i class="pi pi-chart-bar"></i>
+
+                <h3>Reportes</h3>
+
+                <p>
+                    Visualización del resumen de datos
+                    y estadísticas de selecciones.
+                </p>
+
+                <p:button
+                        value="Abrir módulo"
+                        href="reportes.xhtml"
+                        icon="pi pi-arrow-right"/>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</h:body>
+
+</html>
