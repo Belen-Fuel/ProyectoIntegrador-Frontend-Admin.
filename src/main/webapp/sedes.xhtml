@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+    <f:viewAction
+            action="#{loginBean.verificarAccesoAdministrador}"
+            onPostback="false"/>
+</f:metadata>
 
 <h:head>
+
     <title>Sedes - UTN GolMundial 2026</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
     <style type="text/css">
+
         body {
             background-color: #f4f6f9;
             font-family: Arial, sans-serif;
@@ -51,14 +63,20 @@
             color: white;
             font-weight: bold;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 30px 20px;
         }
 
-       .encabezado {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);
+        .encabezado {
+            background: linear-gradient(
+                    135deg,
+                    #0f172a 0%,
+                    #1e3a8a 45%,
+                    #2563eb 100%
+            );
             color: white;
             border-radius: 16px;
             padding: 30px 28px;
@@ -99,235 +117,754 @@
             z-index: 1;
         }
 
-        .acciones{
-            background:#fff;
-            border-radius:14px;
-            padding:16px 20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:22px;
-            box-shadow:0 4px 15px rgba(0,0,0,.08);
+        .acciones-superiores {
+            background: white;
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            gap: 10px;
+            flex-wrap: wrap;
         }
+
+        .herramientas-sedes {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .buscador-sedes {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            min-width: 280px;
+        }
+
+        .buscador-sedes > i {
+            position: absolute;
+            left: 12px;
+            z-index: 2;
+            color: #64748b;
+        }
+
+        .buscador-sedes .ui-inputfield {
+            width: 100%;
+            padding-left: 36px;
+        }
+
+        .contenedor-tabla {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .botones-acciones {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .formulario-dialogo {
+            min-width: 420px;
+        }
+
+        .campo-dialogo {
+            width: 100%;
+        }
+
+        .botones-dialogo {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .confirmacion-eliminar {
+            max-width: 440px;
+            line-height: 1.6;
+        }
+
+        .advertencia-eliminar {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .advertencia-eliminar i {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+
+        @media screen and (max-width: 600px) {
+
+            .container {
+                padding: 20px 10px;
+            }
+
+            .encabezado {
+                padding: 24px 18px;
+            }
+
+            .encabezado h1 {
+                font-size: 23px;
+            }
+
+            .formulario-dialogo {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .acciones-superiores {
+                align-items: stretch;
+            }
+
+            .acciones-superiores .ui-button {
+                width: 100%;
+            }
+
+            .herramientas-sedes {
+                width: 100%;
+                align-items: stretch;
+            }
+
+            .buscador-sedes {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
     </style>
+
 </h:head>
 
 <h:body>
 
+    <!-- Barra de navegación -->
     <div class="barra">
 
-    <div class="marca">
-        <h1>UTN GolMundial 2026</h1>
+        <div class="marca">
 
-        <small>
-            Panel administrativo del torneo
-        </small>
-    </div>
+            <h1>UTN GolMundial 2026</h1>
 
-    <h:form id="formMenu">
-
-        <div class="menu">
-
-            <p:button
-                    value="Panel"
-                    icon="pi pi-home"
-                    href="#{request.contextPath}/dashboard.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <p:button
-                    value="Partidos"
-                    icon="pi pi-calendar"
-                    href="#{request.contextPath}/partidos.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <p:button
-                    value="Selecciones"
-                    icon="pi pi-flag"
-                    href="#{request.contextPath}/selecciones.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <p:button
-                    value="Sedes"
-                    icon="pi pi-map-marker"
-                    href="#{request.contextPath}/sedes.xhtml"/>
-
-            <p:button
-                    value="Usuarios"
-                    icon="pi pi-users"
-                    href="#{request.contextPath}/usuarios.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <p:button
-                    value="Auditoría"
-                    icon="pi pi-search"
-                    href="#{request.contextPath}/auditoria.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <p:button
-                    value="Reportes"
-                    icon="pi pi-chart-bar"
-                    href="#{request.contextPath}/reportes.xhtml"
-                    styleClass="ui-button-outlined"/>
-
-            <h:panelGroup
-                    rendered="#{loginBean.logueado and loginBean.administrador}"
-                    layout="block"
-                    style="display:inline-flex;
-                           align-items:center;
-                           gap:8px;">
-
-                <span class="sesion-usuario">
-                    <i class="pi pi-user"></i>
-                    #{loginBean.usuario.nombre}
-                </span>
-
-                <p:commandButton
-                        value="Cerrar sesión"
-                        icon="pi pi-sign-out"
-                        action="#{loginBean.cerrarSesion}"
-                        ajax="false"
-                        styleClass="ui-button-danger"/>
-
-            </h:panelGroup>
+            <small>
+                Panel administrativo del torneo
+            </small>
 
         </div>
 
-    </h:form>
+        <h:form id="formMenu">
 
-</div>
+            <div class="menu">
+
+                <p:button
+                        value="Panel"
+                        icon="pi pi-home"
+                        href="#{request.contextPath}/dashboard.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <p:button
+                        value="Partidos"
+                        icon="pi pi-calendar"
+                        href="#{request.contextPath}/partidos.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <p:button
+                        value="Selecciones"
+                        icon="pi pi-flag"
+                        href="#{request.contextPath}/selecciones.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <p:button
+                        value="Sedes"
+                        icon="pi pi-map-marker"
+                        href="#{request.contextPath}/sedes.xhtml"/>
+
+                <p:button
+                        value="Usuarios"
+                        icon="pi pi-users"
+                        href="#{request.contextPath}/usuarios.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <p:button
+                        value="Auditoría"
+                        icon="pi pi-search"
+                        href="#{request.contextPath}/auditoria.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <p:button
+                        value="Reportes"
+                        icon="pi pi-chart-bar"
+                        href="#{request.contextPath}/reportes.xhtml"
+                        styleClass="ui-button-outlined"/>
+
+                <h:panelGroup
+                        rendered="#{loginBean.logueado
+                                    and loginBean.administrador}"
+                        layout="block"
+                        style="display:inline-flex;
+                               align-items:center;
+                               gap:8px;">
+
+                    <span class="sesion-usuario">
+
+                        <i class="pi pi-user"></i>
+
+                        #{loginBean.usuario.nombre}
+
+                    </span>
+
+                    <p:commandButton
+                            value="Cerrar sesión"
+                            icon="pi pi-sign-out"
+                            action="#{loginBean.cerrarSesion}"
+                            ajax="false"
+                            styleClass="ui-button-danger"/>
+
+                </h:panelGroup>
+
+            </div>
+
+        </h:form>
+
+    </div>
+
     <div class="container">
 
-    <div class="encabezado">
+        <!-- Encabezado -->
+        <div class="encabezado">
 
-        <div>
             <h1>
+
                 <i class="pi pi-map-marker"></i>
-                🏟️ Sedes del Mundial 2026
+
+                Sedes del Mundial 2026
+
             </h1>
 
             <p>
-                Consulta los estadios oficiales de Estados Unidos, México y Canadá.
+                Administra los estadios oficiales de Estados Unidos,
+                México y Canadá.
             </p>
+
         </div>
 
-    </div>
+        <!-- Tabla principal -->
+        <h:form id="formSedes">
 
-    <h:form id="formSedes">
+            <p:growl
+                    id="msjs"
+                    showSummary="true"
+                    showDetail="true"
+                    keepAlive="false"
+                    life="6000"/>
 
-            <!-- Mensajes globales para validar si falta algún campo al guardar -->
-            <p:growl id="msjs" showDetail="true" keepAlive="false" />
+            <div class="acciones-superiores">
 
-            <!-- Botón para abrir el diálogo de registro -->
-           <!-- Acciones -->
-                <div style="display:flex;
-                            justify-content:space-between;
-                            align-items:center;
-                            margin-bottom:15px;
-                            flex-wrap:wrap;
-                            gap:10px;">
+                <p:button
+                        value="Volver al panel"
+                        icon="pi pi-home"
+                        href="#{request.contextPath}/dashboard.xhtml"
+                        styleClass="ui-button-secondary"/>
 
-                    <p:button
-                            value="Volver al panel"
-                            icon="pi pi-home"
-                            href="#{request.contextPath}/dashboard.xhtml"
-                            styleClass="ui-button-secondary"/>
+                <div class="herramientas-sedes">
 
                     <p:commandButton
-                            value="Nueva Sede"
+                            value="Nueva sede"
                             icon="pi pi-plus"
-                            onclick="PF('dlgSede').show()"
-                            type="button"
+                            actionListener="#{sedeBean.prepararNuevaSede}"
+                            process="@this"
+                            update=":formNuevaSede"
+                            resetValues="true"
+                            oncomplete="PF('dlgNuevaSede').show()"
                             styleClass="ui-button-success"/>
 
                 </div>
 
-            <!-- Tabla adaptativa (responsiva) de PrimeFaces -->
-            <p:dataTable id="tablaSedes" var="sede" value="#{sedeBean.sedes}" 
-                         reflow="true" rows="10" paginator="true"
-                         paginatorPosition="bottom"
-                         emptyMessage="No se encontraron sedes cargadas en el sistema.">
-                
-                <p:column headerText="ID" style="width: 50px; text-align: center;">
-                    <h:outputText value="#{sede.id}" />
-                </p:column>
+            </div>
 
-                <p:column headerText="Nombre del Estadio">
-                    <h:outputText value="#{sede.nombre}" style="font-weight: bold; color: #2a5298;" />
-                </p:column>
+            <div class="contenedor-tabla">
 
-                <p:column headerText="Ciudad">
-                    <h:outputText value="#{sede.ciudad}" />
-                </p:column>
+                <p:dataTable
+                        id="tablaSedes"
+                        widgetVar="tablaSedesWidget"
+                        var="sede"
+                        value="#{sedeBean.sedes}"
+                        rowIndexVar="indice"
+                        reflow="true"
+                        rows="10"
+                        paginator="true"
+                        paginatorPosition="bottom"
+                        rowHover="true"
+                        filterDelay="300"
+                        globalFilterOnly="true"
+                        emptyMessage="No se encontraron sedes que coincidan con la búsqueda.">
 
-                <p:column headerText="País">
-                    <h:outputText value="#{sede.pais}" />
-                </p:column>
 
-                <p:column headerText="Capacidad" style="text-align: right;">
-                    <h:outputText value="#{sede.capacidadAprox}">
-                        <f:convertNumber pattern="#,###" />
-                    </h:outputText>
-                </p:column>
+                    <f:facet name="header">
 
-            </p:dataTable>
+                        <div class="herramientas-sedes">
+
+                            <span class="buscador-sedes">
+
+                                <i class="pi pi-search"></i>
+
+                                <p:inputText
+                                        id="globalFilter"
+                                        placeholder="Buscar sede..."
+                                        autocomplete="off"
+                                        onkeydown="
+                                            if (event.key === 'Enter') {
+                                                event.preventDefault();
+                                                PF('tablaSedesWidget').filter();
+                                                return false;
+                                            }
+                                        "/>
+
+                            </span>
+
+                            <p:commandButton
+                                    value="Buscar"
+                                    icon="pi pi-search"
+                                    type="button"
+                                    onclick="
+                                        PF('tablaSedesWidget').filter();
+                                        return false;
+                                    "
+                                    styleClass="ui-button-info"/>
+
+                            <p:commandButton
+                                    value="Limpiar"
+                                    icon="pi pi-filter-slash"
+                                    type="button"
+                                    onclick="PF('tablaSedesWidget').clearFilters(); return false;"
+                                    styleClass="ui-button-secondary"/>
+
+                        </div>
+
+                    </f:facet>
+
+                    <p:column
+                            headerText="N.º"
+                            style="width:60px;text-align:center;">
+
+                        <h:outputText value="#{indice + 1}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Nombre del estadio"
+                            sortBy="#{sede.nombre}"
+                            filterBy="#{sede.nombre}"
+                            filterMatchMode="contains">
+
+                        <h:outputText
+                                value="#{sede.nombre}"
+                                style="font-weight:bold;color:#2a5298;"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Ciudad"
+                            sortBy="#{sede.ciudad}"
+                            filterBy="#{sede.ciudad}"
+                            filterMatchMode="contains">
+
+                        <h:outputText value="#{sede.ciudad}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="País"
+                            sortBy="#{sede.pais}"
+                            filterBy="#{sede.pais}"
+                            filterMatchMode="contains">
+
+                        <h:outputText value="#{sede.pais}"/>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Capacidad"
+                            sortBy="#{sede.capacidadAprox}"
+                            filterBy="#{sede.capacidadAprox}"
+                            filterMatchMode="contains"
+                            style="text-align:right;">
+
+                        <h:outputText value="#{sede.capacidadAprox}">
+
+                            <f:convertNumber pattern="#,###"/>
+
+                        </h:outputText>
+
+                    </p:column>
+
+                    <p:column
+                            headerText="Acciones"
+                            style="width:230px;text-align:center;">
+
+                        <div class="botones-acciones">
+
+                            <p:commandButton
+                                    value="Editar"
+                                    icon="pi pi-pencil"
+                                    actionListener="#{sedeBean.prepararEdicion(sede)}"
+                                    process="@this"
+                                    update=":formEditarSede"
+                                    resetValues="true"
+                                    oncomplete="PF('dlgEditarSede').show()"
+                                    styleClass="ui-button-warning"/>
+
+                            <p:commandButton
+                                    value="Eliminar"
+                                    icon="pi pi-trash"
+                                    actionListener="#{sedeBean.prepararEliminacion(sede)}"
+                                    process="@this"
+                                    update=":formEliminarSede"
+                                    oncomplete="PF('dlgEliminarSede').show()"
+                                    styleClass="ui-button-danger"/>
+
+                        </div>
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </div>
+
         </h:form>
 
-        <!-- Diálogo Modal para Registrar Nueva Sede -->
-        <p:dialog header="Registrar Nueva Sede" 
-                  widgetVar="dlgSede" 
-                  modal="true" 
-                  responsive="true" 
-                  showEffect="fade" 
-                  hideEffect="fade"
-                  resizable="false">
-                  
-            <h:form id="formNuevaSede">
-                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" style="margin-bottom: 10px;">
-                    
-                    <p:outputLabel for="nombre" value="Nombre del Estadio:" />
-                    <p:inputText id="nombre" 
-                                 value="#{sedeBean.nuevaSede.nombre}" 
-                                 required="true" 
-                                 requiredMessage="El nombre del estadio es obligatorio" />
+        <!-- Diálogo para registrar -->
+        <p:dialog
+                id="dialogoNuevaSede"
+                header="Registrar nueva sede"
+                widgetVar="dlgNuevaSede"
+                modal="true"
+                responsive="true"
+                showEffect="fade"
+                hideEffect="fade"
+                resizable="false"
+                closable="false"
+                width="520">
 
-                    <p:outputLabel for="ciudad" value="Ciudad:" />
-                    <p:inputText id="ciudad" 
-                                 value="#{sedeBean.nuevaSede.ciudad}" 
-                                 required="true" 
-                                 requiredMessage="La ciudad es obligatoria" />
+            <h:form
+                    id="formNuevaSede"
+                    styleClass="formulario-dialogo">
 
-                    <p:outputLabel for="pais" value="País:" />
-                    <p:inputText id="pais" 
-                                 value="#{sedeBean.nuevaSede.pais}" 
-                                 required="true" 
-                                 requiredMessage="El país es obligatorio" />
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        styleClass="ui-panelgrid-blank"
+                        columnClasses="ui-g-12 ui-md-4,
+                                       ui-g-12 ui-md-8">
 
-                    <p:outputLabel for="capacidad" value="Capacidad:" />
-                    <p:inputNumber id="capacidad"
-                                value="#{sedeBean.nuevaSede.capacidadAprox}"
-                                decimalPlaces="0"
-                                minValue="1"
-                                required="true"
-                                requiredMessage="La capacidad es obligatoria" />
-                                   
+                    <p:outputLabel
+                            for="nombreNueva"
+                            value="Nombre del estadio:"/>
+
+                    <p:inputText
+                            id="nombreNueva"
+                            value="#{sedeBean.nuevaSede.nombre}"
+                            required="true"
+                            requiredMessage="El nombre del estadio es obligatorio."
+                            maxlength="100"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="ciudadNueva"
+                            value="Ciudad:"/>
+
+                    <p:inputText
+                            id="ciudadNueva"
+                            value="#{sedeBean.nuevaSede.ciudad}"
+                            required="true"
+                            requiredMessage="La ciudad es obligatoria."
+                            maxlength="80"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="paisNueva"
+                            value="País:"/>
+
+                    <p:inputText
+                            id="paisNueva"
+                            value="#{sedeBean.nuevaSede.pais}"
+                            required="true"
+                            requiredMessage="El país es obligatorio."
+                            maxlength="80"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="capacidadNueva"
+                            value="Capacidad aproximada:"/>
+
+                    <p:inputNumber
+                            id="capacidadNueva"
+                            value="#{sedeBean.nuevaSede.capacidadAprox}"
+                            required="true"
+                            requiredMessage="La capacidad es obligatoria."
+                            decimalPlaces="0"
+                            minValue="1"
+                            maxValue="999999"
+                            thousandSeparator=","
+                            styleClass="campo-dialogo"/>
+
                 </p:panelGrid>
 
-                <div style="text-align: right; margin-top: 15px;">
-                    <p:commandButton value="Cancelar" 
-                                     icon="pi pi-times" 
-                                     onclick="PF('dlgSede').hide()" 
-                                     styleClass="ui-button-secondary" 
-                                     type="button"
-                                     style="margin-right: .5rem;" />
-                                     
-                    <p:commandButton value="Guardar" 
-                                     icon="pi pi-check" 
-                                     actionListener="#{sedeBean.guardarSede}" 
-                                     update=":formSedes:tablaSedes :formSedes:msjs @form" 
-                                     oncomplete="if (!args.validationFailed) PF('dlgSede').hide()" />
+                <div class="botones-dialogo">
+
+                    <p:commandButton
+                            value="Cancelar"
+                            icon="pi pi-times"
+                            actionListener="#{sedeBean.cancelarRegistro}"
+                            process="@this"
+                            update="@form"
+                            resetValues="true"
+                            oncomplete="PF('dlgNuevaSede').hide()"
+                            styleClass="ui-button-secondary"/>
+
+                    <p:commandButton
+                            value="Guardar"
+                            icon="pi pi-check"
+                            actionListener="#{sedeBean.guardarSede}"
+                            process="@form"
+                            update="@form
+                                    :formSedes:tablaSedes
+                                    :formSedes:msjs"
+                            oncomplete="
+                                if (!args.validationFailed) {
+                                    PF('dlgNuevaSede').hide();
+                                }
+                            "
+                            styleClass="ui-button-success"/>
+
                 </div>
+
             </h:form>
+
         </p:dialog>
+
+        <!-- Diálogo para editar -->
+        <p:dialog
+                id="dialogoEditarSede"
+                header="Actualizar sede"
+                widgetVar="dlgEditarSede"
+                modal="true"
+                responsive="true"
+                showEffect="fade"
+                hideEffect="fade"
+                resizable="false"
+                closable="false"
+                width="520">
+
+            <h:form
+                    id="formEditarSede"
+                    styleClass="formulario-dialogo">
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        styleClass="ui-panelgrid-blank"
+                        columnClasses="ui-g-12 ui-md-4,
+                                       ui-g-12 ui-md-8">
+
+                    <p:outputLabel
+                            for="idEditar"
+                            value="ID:"/>
+
+                    <p:inputText
+                            id="idEditar"
+                            value="#{sedeBean.sedeEditar.id}"
+                            readonly="true"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="nombreEditar"
+                            value="Nombre del estadio:"/>
+
+                    <p:inputText
+                            id="nombreEditar"
+                            value="#{sedeBean.sedeEditar.nombre}"
+                            required="true"
+                            requiredMessage="El nombre del estadio es obligatorio."
+                            maxlength="100"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="ciudadEditar"
+                            value="Ciudad:"/>
+
+                    <p:inputText
+                            id="ciudadEditar"
+                            value="#{sedeBean.sedeEditar.ciudad}"
+                            required="true"
+                            requiredMessage="La ciudad es obligatoria."
+                            maxlength="80"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="paisEditar"
+                            value="País:"/>
+
+                    <p:inputText
+                            id="paisEditar"
+                            value="#{sedeBean.sedeEditar.pais}"
+                            required="true"
+                            requiredMessage="El país es obligatorio."
+                            maxlength="80"
+                            styleClass="campo-dialogo"/>
+
+                    <p:outputLabel
+                            for="capacidadEditar"
+                            value="Capacidad aproximada:"/>
+
+                    <p:inputNumber
+                            id="capacidadEditar"
+                            value="#{sedeBean.sedeEditar.capacidadAprox}"
+                            required="true"
+                            requiredMessage="La capacidad es obligatoria."
+                            decimalPlaces="0"
+                            minValue="1"
+                            maxValue="999999"
+                            thousandSeparator=","
+                            styleClass="campo-dialogo"/>
+
+                </p:panelGrid>
+
+                <div class="botones-dialogo">
+
+                    <p:commandButton
+                            value="Cancelar"
+                            icon="pi pi-times"
+                            actionListener="#{sedeBean.cancelarEdicion}"
+                            process="@this"
+                            update="@form"
+                            resetValues="true"
+                            oncomplete="PF('dlgEditarSede').hide()"
+                            styleClass="ui-button-secondary"/>
+
+                    <p:commandButton
+                            value="Actualizar"
+                            icon="pi pi-refresh"
+                            actionListener="#{sedeBean.actualizarSede}"
+                            process="@form"
+                            update="@form
+                                    :formSedes:tablaSedes
+                                    :formSedes:msjs"
+                            oncomplete="
+                                if (!args.validationFailed) {
+                                    PF('dlgEditarSede').hide();
+                                }
+                            "
+                            styleClass="ui-button-warning"/>
+
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+
+        <!-- Diálogo de confirmación para eliminar -->
+        <p:dialog
+                id="dialogoEliminarSede"
+                header="Confirmar eliminación"
+                widgetVar="dlgEliminarSede"
+                modal="true"
+                responsive="true"
+                showEffect="fade"
+                hideEffect="fade"
+                resizable="false"
+                closable="false"
+                width="480">
+
+            <h:form
+                    id="formEliminarSede"
+                    styleClass="confirmacion-eliminar">
+
+                <div class="advertencia-eliminar">
+
+                    <i class="pi pi-exclamation-triangle"></i>
+
+                    <div>
+
+                        <strong>
+                            ¿Está segura de eliminar esta sede?
+                        </strong>
+
+                        <br/>
+
+                        Se eliminará el estadio:
+
+                        <strong>
+                            #{sedeBean.sedeEliminar.nombre}
+                        </strong>
+
+                        <br/>
+
+                        Ciudad:
+
+                        <strong>
+                            #{sedeBean.sedeEliminar.ciudad}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+                <p>
+                    La sede solamente podrá eliminarse si no tiene
+                    partidos relacionados.
+                </p>
+
+                <div class="botones-dialogo">
+
+                    <p:commandButton
+                            value="Cancelar"
+                            icon="pi pi-times"
+                            actionListener="#{sedeBean.cancelarEliminacion}"
+                            process="@this"
+                            update="@form"
+                            oncomplete="PF('dlgEliminarSede').hide()"
+                            styleClass="ui-button-secondary"/>
+
+                    <p:commandButton
+                            value="Sí, eliminar"
+                            icon="pi pi-trash"
+                            actionListener="#{sedeBean.eliminarSede}"
+                            process="@this"
+                            update="@form
+                                    :formSedes:tablaSedes
+                                    :formSedes:msjs"
+                            oncomplete="
+                                if (!args.validationFailed) {
+                                    PF('dlgEliminarSede').hide();
+                                }
+                            "
+                            styleClass="ui-button-danger"/>
+
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+
     </div>
+
 </h:body>
+
 </html>

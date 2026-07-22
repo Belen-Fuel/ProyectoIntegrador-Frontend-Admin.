@@ -997,26 +997,26 @@ public class SeleccionBean implements Serializable {
      * Muestra mensajes en la interfaz.
      */
     private void mostrarMensaje(
-            FacesMessage.Severity severidad,
-            String titulo,
-            String detalle
-    ) {
+                FacesMessage.Severity severidad,
+                String titulo,
+                String detalle
+        ) {
 
         FacesContext contexto =
                 FacesContext.getCurrentInstance();
 
         if (contexto != null) {
 
-            contexto.addMessage(
-                    null,
-                    new FacesMessage(
-                            severidad,
-                            titulo,
-                            detalle
-                    )
-            );
+                contexto.addMessage(
+                        null,
+                        new FacesMessage(
+                                severidad,
+                                detalle,
+                                null
+                        )
+                );
         }
-    }
+        }
 
     // Getters y setters
 

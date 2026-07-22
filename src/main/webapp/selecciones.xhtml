@@ -6,6 +6,12 @@
       xmlns:f="jakarta.faces.core"
       xmlns:p="http://primefaces.org/ui">
 
+    <f:metadata>
+        <f:viewAction
+                action="#{loginBean.verificarAccesoAdministrador}"
+                onPostback="false"/>
+</f:metadata>
+
 <h:head>
     <title>Administrar Selecciones - UTN GolMundial 2026</title>
 
@@ -130,8 +136,20 @@
 
         .grupo-botones {
             display: flex;
+            align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+        }
+
+        .busqueda-global {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .busqueda-global .ui-inputfield {
+            width: 260px;
         }
 
         .codigo-fifa {
@@ -210,6 +228,14 @@
             }
 
             .grupo-botones {
+                width: 100%;
+            }
+
+            .busqueda-global {
+                width: 100%;
+            }
+
+            .busqueda-global .ui-inputfield {
                 width: 100%;
             }
         }
@@ -332,10 +358,12 @@
         <!-- Formulario principal -->
         <h:form id="formSelecciones">
 
-            <p:growl
-                    id="mensajes"
-                    showDetail="true"
-                    life="5000"/>
+            <p:growl id="mensajes"
+                        showSummary="true"
+                        showDetail="false"
+                        skipDetailIfEqualsSummary="true"
+                        life="5000"
+                        closable="true"/>
 
             <div class="acciones">
 
@@ -367,26 +395,77 @@
             </div>
 
             <!-- Tabla administrativa -->
-            <p:dataTable
-                    id="tablaSelecciones"
-                    value="#{seleccionBean.selecciones}"
-                    var="seleccion"
-                    paginator="true"
-                    rows="10"
-                    reflow="true"
-                    emptyMessage="No existen selecciones registradas."
-                    paginatorPosition="bottom">
+                <p:dataTable
+                        id="tablaSelecciones"
+                        widgetVar="tablaSeleccionesWidget"
+                        var="seleccion"
+                        value="#{seleccionBean.selecciones}"
+                        rowIndexVar="indice"
+                        reflow="true"
+                        rows="10"
+                        paginator="true"
+                        paginatorPosition="bottom"
+                        rowHover="true"
+                        filterDelay="300"
+                        globalFilterOnly="true"
+                        emptyMessage="No se encontraron selecciones que coincidan con la búsqueda.">
 
-                <p:column
-                        headerText="ID"
-                        style="width:60px; text-align:center;">
 
-                    <h:outputText value="#{seleccion.id}"/>
+                    <f:facet name="header">
+
+                        <div class="busqueda-global">
+
+                            <span class="ui-input-icon-left">
+
+                                <i class="pi pi-search"></i>
+
+                                <p:inputText
+                                        id="globalFilter"
+                                        placeholder="Buscar selección..."
+                                        autocomplete="off"
+                                        onkeydown="
+                                            if (event.key === 'Enter') {
+                                                event.preventDefault();
+                                                PF('tablaSeleccionesWidget').filter();
+                                                return false;
+                                            }
+                                        "/>
+
+                            </span>
+
+                            <p:commandButton
+                                    value="Buscar"
+                                    icon="pi pi-search"
+                                    type="button"
+                                    onclick="
+                                        PF('tablaSeleccionesWidget').filter();
+                                        return false;
+                                    "
+                                    styleClass="ui-button-info"/>
+
+                            <p:commandButton
+                                    value="Limpiar"
+                                    icon="pi pi-filter-slash"
+                                    type="button"
+                                    onclick="PF('tablaSeleccionesWidget').clearFilters(); return false;"
+                                    styleClass="ui-button-secondary ui-button-outlined"/>
+
+                        </div>
+
+                    </f:facet>
+
+               <p:column
+                        headerText="N.º"
+                        style="width:60px;text-align:center;">
+
+                    <h:outputText value="#{indice + 1}"/>
 
                 </p:column>
 
                 <p:column
                         headerText="Código FIFA"
+                        filterBy="#{seleccion.codigoFifa}"
+                        filterMatchMode="contains"
                         style="text-align:center;">
 
                     <h:outputText
@@ -395,7 +474,10 @@
 
                 </p:column>
 
-                <p:column headerText="Selección">
+                <p:column
+                        headerText="Selección"
+                        filterBy="#{seleccion.nombre}"
+                        filterMatchMode="contains">
 
                     <h:outputText
                             value="#{seleccion.nombre}"
@@ -405,6 +487,8 @@
 
                 <p:column
                         headerText="Grupo"
+                        filterBy="#{seleccion.grupo}"
+                        filterMatchMode="contains"
                         style="text-align:center;">
 
                     <span class="etiqueta-grupo">
@@ -413,14 +497,20 @@
 
                 </p:column>
 
-                <p:column headerText="Confederación">
+                <p:column
+                        headerText="Confederación"
+                        filterBy="#{seleccion.confederacion}"
+                        filterMatchMode="contains">
 
                     <h:outputText
                             value="#{seleccion.confederacion}"/>
 
                 </p:column>
 
-                <p:column headerText="Clasificación">
+                <p:column
+                        headerText="Clasificación"
+                        filterBy="#{seleccion.clasificacion}"
+                        filterMatchMode="contains">
 
                     <h:outputText
                             value="#{seleccion.clasificacion}"/>
@@ -513,7 +603,8 @@
 
                 <p:messages
                         id="mensajesNueva"
-                        showDetail="true"
+                        showSummary="true"
+                        showDetail="false"
                         closable="true"/>
 
                 <p:panelGrid
@@ -678,11 +769,11 @@
                 hideEffect="fade">
 
             <h:form id="formEditarSeleccion">
-
-                <p:messages
-                        id="mensajesEditar"
-                        showDetail="true"
-                        closable="true"/>
+            <p:messages
+                    id="mensajesEditar"
+                    showSummary="true"
+                    showDetail="false"
+                    closable="true"/>
 
                 <p:panelGrid
                         columns="2"

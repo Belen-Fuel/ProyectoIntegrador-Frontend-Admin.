@@ -6,6 +6,12 @@
       xmlns:f="jakarta.faces.core"
       xmlns:p="http://primefaces.org/ui">
 
+    <f:metadata>
+        <f:viewAction
+                action="#{loginBean.verificarAccesoAdministrador}"
+                onPostback="false"/>
+   </f:metadata>
+
 <h:head>
 
     <title>Auditoría - UTN GolMundial 2026</title>

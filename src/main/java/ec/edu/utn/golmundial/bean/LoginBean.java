@@ -333,6 +333,34 @@ public class LoginBean implements Serializable {
         }
     }
 
+    /**
+ * Verifica que el usuario tenga una sesión administrativa.
+ */
+    public String verificarAccesoAdministrador() {
+
+        if (isAdministrador()) {
+                return null;
+        }
+
+        FacesContext contexto =
+                FacesContext.getCurrentInstance();
+
+        if (contexto != null) {
+
+                contexto.getExternalContext()
+                        .getFlash()
+                        .setKeepMessages(true);
+
+                mostrarMensaje(
+                        FacesMessage.SEVERITY_WARN,
+                        "Inicio de sesión requerido",
+                        "Debe iniciar sesión como administrador para acceder."
+                );
+        }
+
+        return "/publico/login.xhtml?faces-redirect=true";
+        }
+
     public String getUsername() {
         return username;
     }
